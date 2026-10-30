@@ -90,35 +90,44 @@ QMainWindow, QWidget#root { background: $BG; }
 QWidget { font-family: "Segoe UI"; font-size: 12px; color: $TEXT; }
 QLabel { background: transparent; }
 
+/* Top accent bar — 2px green line at window top */
+QWidget#titleBar { background: $ACCENT; }
+
 QLabel#appName { color: $ACCENT; font-size: 16px; font-weight: 700; }
 QLabel#gpuName { color: $GRAY; font-size: 11px; }
-QLabel#statusBar { background: #111111; color: #666666; font-size: 10px; }
+QLabel#statusBar {
+    background: #111111; color: #666666; font-size: 11px;
+    border: none; spacing: 0px; text-align: center;
+}
 
+/* Tab bar — borderless, accent on checked */
 QPushButton#tab {
     background: transparent; color: $GRAY; border: none;
-    border-bottom: 2px solid transparent;
     font-size: 11px; font-weight: 600; padding: 0 12px;
 }
 QPushButton#tab:hover { color: #cfcfcf; }
 QPushButton#tab:checked { color: #ffffff; border-bottom: 2px solid $ACCENT; }
 
-QFrame#card { background: $CARD; border-radius: 8px; }
+/* Cards — dark bg, 8px radius, no border */
+QFrame#card { background: $CARD; border-radius: 8px; border: none; }
 QLabel#cardLabel { color: $GRAY; font-size: 11px; }
 QLabel#cardValue {
-    color: #ffffff; font-family: "Consolas", "Courier New", monospace;
-    font-size: 24px; font-weight: bold;
+    color: $ACCENT; font-family: "Consolas", "Courier New", monospace;
+    font-size: 28px; font-weight: bold;
 }
 QLabel#cardSub { color: $GRAY; font-size: 11px; }
 
-QLabel#sliderName { color: #cfcfcf; font-size: 12px; }
+/* Slider values */
+QLabel#sliderName { color: #cfcfcf; font-size: 11px; }
 QLabel#sliderName:disabled { color: #555555; }
 QLabel#sliderValue {
     color: $ACCENT; font-family: "Consolas", "Courier New", monospace;
-    font-size: 12px; font-weight: bold;
+    font-size: 28px; font-weight: bold;
 }
 QLabel#sliderValue:disabled { color: #3f6b55; }
 QLabel#warn { color: $WARN; font-size: 10px; }
 
+/* Sliders — 4px track, 14px circular green handle */
 QSlider { background: transparent; }
 QSlider::groove:horizontal { height: 4px; background: $TRACK; border-radius: 2px; }
 QSlider::add-page:horizontal { background: $TRACK; border-radius: 2px; }
@@ -129,19 +138,27 @@ QSlider::handle:horizontal {
 QSlider::sub-page:horizontal:disabled { background: #3a3a3a; }
 QSlider::handle:horizontal:disabled { background: #4a4a4a; }
 
+/* Buttons — no border, 6px radius, dark bg, green on hover */
 QPushButton#primary {
-    background: $ACCENT; color: #000000; border: none; border-radius: 8px;
+    background: $CARD; color: #cfcfcf; border: none; border-radius: 6px;
     font-size: 12px; font-weight: 700; padding: 0 16px;
 }
-QPushButton#primary:hover { background: #33ffa0; }
-QPushButton#primary:pressed { background: #00cc6e; }
+QPushButton#primary:hover { background: $ACCENT; color: #000000; }
+QPushButton#primary:pressed { background: #00cc6e; color: #000000; }
 QPushButton#primary:disabled { background: #1f3a2d; color: #4d6b5c; }
 QPushButton#secondary {
-    background: $CARD; color: $GRAY; border: none; border-radius: 8px;
+    background: $CARD; color: $GRAY; border: none; border-radius: 6px;
     font-size: 12px; font-weight: 600; padding: 0 16px;
 }
-QPushButton#secondary:hover { background: #242424; color: #dddddd; }
-QPushButton#secondary:pressed { background: #151515; }
+QPushButton#secondary:hover { background: $ACCENT; color: #000000; }
+QPushButton#secondary:pressed { background: #00cc6e; color: #000000; }
+
+/* Close button — red on hover */
+QPushButton#closeBtn {
+    background: transparent; color: $GRAY; border: none;
+    font-size: 14px; font-weight: 700; padding: 0 8px;
+}
+QPushButton#closeBtn:hover { background: $RED; color: #ffffff; border-radius: 4px; }
 
 QTextEdit#log {
     background: $CARD; color: #cfcfcf; border: none; border-radius: 8px; padding: 8px;
@@ -149,9 +166,9 @@ QTextEdit#log {
 }
 QLabel#result { color: $ACCENT; font-family: "Consolas", "Courier New", monospace; font-size: 12px; }
 
-QLabel#benchLabel { color: $GRAY; font-size: 12px; }
+QLabel#benchLabel { color: $GRAY; font-size: 11px; }
 QLabel#benchValue {
-    color: #ffffff; font-family: "Consolas", "Courier New", monospace; font-size: 13px;
+    color: $ACCENT; font-family: "Consolas", "Courier New", monospace; font-size: 28px; font-weight: bold;
 }
 
 QLineEdit {
@@ -174,13 +191,13 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: trans
 QMessageBox { background: $BG; }
 QMessageBox QLabel { color: $TEXT; font-size: 13px; }
 QMessageBox QPushButton {
-    background: $CARD; color: #cccccc; border: none; border-radius: 8px;
+    background: $CARD; color: #cccccc; border: none; border-radius: 6px;
     padding: 6px 18px; min-width: 64px;
 }
-QMessageBox QPushButton:hover { background: #242424; }
+QMessageBox QPushButton:hover { background: $ACCENT; color: #000000; }
 QMessageBox QPushButton:default { background: $ACCENT; color: #000000; font-weight: 700; }
 """
-).substitute(BG=BG, CARD=CARD, ACCENT=ACCENT, GRAY=GRAY, TEXT=TEXT, TRACK=TRACK, WARN=WARN)
+).substitute(BG=BG, CARD=CARD, ACCENT=ACCENT, GRAY=GRAY, TEXT=TEXT, TRACK=TRACK, WARN=WARN, RED=RED)
 
 
 # --------------------------------------------------------------------------- #
@@ -967,7 +984,7 @@ class StatCard(QFrame):
         super().__init__(parent)
         self.setObjectName("card")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        self.setFixedSize(180, 80)
+        self.setFixedSize(180, 90)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(12, 8, 12, 8)
@@ -977,7 +994,7 @@ class StatCard(QFrame):
         self.value_lbl = make_label(MISSING, "cardValue")
         self.sub_lbl = make_label(sub, "cardSub")
         self.label_lbl.setFixedHeight(15)
-        self.value_lbl.setFixedHeight(30)
+        self.value_lbl.setFixedHeight(32)
         self.sub_lbl.setFixedHeight(15)
 
         layout.addWidget(self.label_lbl)
@@ -1003,7 +1020,7 @@ class DashboardPage(QWidget):
         layout.setSpacing(0)
 
         grid_host = QWidget()
-        grid_host.setFixedSize(3 * 180 + 2 * 8, 2 * 80 + 8)
+        grid_host.setFixedSize(3 * 180 + 2 * 8, 2 * 90 + 8)
         grid = QGridLayout(grid_host)
         grid.setContentsMargins(0, 0, 0, 0)
         grid.setSpacing(8)
@@ -1414,15 +1431,14 @@ class MainWindow(QMainWindow):
         self._history: HistoryGraph | None = None
         self._temp_alerted = False
         self._vendor = detect_gpu_vendor() or "nvidia"
+        self._drag_active = False
+        self._drag_pos: QPoint | None = None
 
         self.setWindowTitle("GPU Unlock")
         self.setWindowIcon(make_tray_icon())
         self.setWindowFlags(
-            Qt.WindowType.Window
-            | Qt.WindowType.WindowTitleHint
-            | Qt.WindowType.WindowSystemMenuHint
-            | Qt.WindowType.WindowMinimizeButtonHint
-            | Qt.WindowType.WindowCloseButtonHint
+            Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.WindowStaysOnTopHint
         )
         self.setFixedSize(WINDOW_W, WINDOW_H)
 
@@ -1438,7 +1454,7 @@ class MainWindow(QMainWindow):
 
         self.stack = QStackedWidget()
         self.status_lbl = make_label("", "statusBar")
-        self.status_lbl.setFixedHeight(22)
+        self.status_lbl.setFixedHeight(24)
         self.status_lbl.setContentsMargins(16, 0, 16, 0)
 
         self.dashboard_page = DashboardPage()
@@ -1481,13 +1497,29 @@ class MainWindow(QMainWindow):
     # ----- construction helpers ------------------------------------------- #
     def _build_top_bar(self) -> QWidget:
         bar = QWidget()
-        bar.setFixedHeight(40)
+        bar.setObjectName("titleBar")
+        bar.setFixedHeight(32)
         layout = QHBoxLayout(bar)
         layout.setContentsMargins(16, 0, 16, 0)
-        layout.addWidget(make_label("GPU Unlock", "appName"))
+        layout.setSpacing(8)
+
+        # App name (drag region)
+        self._drag_label = make_label("GPU Unlock", "appName")
+        layout.addWidget(self._drag_label)
+
         layout.addStretch(1)
+
         self.gpu_name_lbl = make_label(MISSING, "gpuName")
         layout.addWidget(self.gpu_name_lbl)
+
+        # Close button
+        close_btn = QPushButton("×")
+        close_btn.setObjectName("closeBtn")
+        close_btn.setFixedSize(24, 24)
+        close_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        close_btn.clicked.connect(self._on_close_clicked)
+        layout.addWidget(close_btn)
+
         return bar
 
     def _build_tab_bar(self) -> QWidget:
@@ -1803,6 +1835,21 @@ class MainWindow(QMainWindow):
                 self.profiles_page.autorun_cb.setChecked(True)
 
     # ----- tray / window state --------------------------------------------- #
+    def _on_close_clicked(self) -> None:
+        self.close()
+
+    def mousePressEvent(self, event) -> None:
+        if event.button() == Qt.MouseButton.LeftButton:
+            self._drag_active = True
+            self._drag_pos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
+
+    def mouseMoveEvent(self, event) -> None:
+        if getattr(self, "_drag_active", False) and getattr(self, "_drag_pos", None) is not None:
+            self.move(event.globalPosition().toPoint() - self._drag_pos)
+
+    def mouseReleaseEvent(self, event) -> None:
+        self._drag_active = False
+        self._drag_pos = None
     def _on_tray_activated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
         if reason in (
             QSystemTrayIcon.ActivationReason.Trigger,

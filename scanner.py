@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
-"""GPU Unlock — Port Scanner (PySide6 QThread + socket.connect_ex).
-Phase 1 verified: PySide6 6.12.0 QtWidgets (QApplication, QMainWindow, QLineEdit,
-QPushButton, QTableWidget, QProgressBar, QVBoxLayout, QHBoxLayout, QHeaderView);
-QtGui.QPalette; QTableWidgetItem.setBackground/foreground; QThread+Signal;
-socket.connect_ex returns 0 on success; QFileDialog.getSaveFileName;
-os.path.expanduser("~/Desktop"). Scapy NOT installed → raw socket only."""
+"""GPU Unlock — Port Scanner (PySide6 QThread + socket.connect_ex + banner grab).
+
+Phase 1 verified APIs:
+  - PySide6 6.12.0: QApplication, QMainWindow, QLineEdit, QPushButton,
+    QTableWidget, QProgressBar, QVBoxLayout, QHBoxLayout, QHeaderView
+  - QtGui.QPalette (NOT QtWidgets — verified via hasattr)
+  - QTableWidgetItem.setBackground/foreground/setTextAlignment
+  - QThread + Signal (from QtCore) — run() override pattern
+  - socket.connect_ex() returns 0 on success
+  - socket.getservbyport(port, 'tcp') returns name or raises OSError
+  - socket.settimeout(1.0) + recv(256): raises socket.timeout if no data
+  - QFileDialog.getSaveFileName, os.path.expanduser("~/Desktop")
+  - Scapy NOT installed → raw socket.connect_ex only"""
 import csv, os, socket, sys
 from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtGui import QColor, QPalette
@@ -37,44 +44,62 @@ def _range(r):
     else:
         s = e = int(r)
     if not 1 <= s <= 65535 or not 1 <= e <= 65535 or s > e:
-        raise ValueError
+        raise ValueError("Invalid port range")
     return s, e
 
-def _scan(host, port):
-    """connect_ex: 0=OPEN, 10061/111=CLOSED, else=FILTERED."""
+def _banner(host, port):
+    """Grab banner: new socket, settimeout(1.0), connect, recv(256), truncate 80."""
     sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        r = sk.connect_ex((host, port))
-        if r == 0:
-            try: svc = socket.getservbyport(port, "tcp")
-            except OSError: svc = SVC.get(port, "unknown")
-            return 0, "OPEN", svc
-        return (1, "CLOSED", "—") if r in (10061, 111) else (2, "FILTERED", "—")
-    except Exception:
-        return 2, "FILTERED", "—"
+        sk.settimeout(1.0)
+        sk.connect((host, port))
+        data = sk.recv(256)
+        return data.decode('ascii', errors='replace')[:80] if data else "—"
+    except (socket.timeout, OSError, Exception):
+        return "—"
     finally:
         sk.close()
 
+def _scan_port(host, port):
+    """connect_ex: 0=OPEN, 10061/111=CLOSED, else=FILTERED. Returns (state, str, svc, banner)."""
+    sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        r = sk.connect_ex((host, port))
+        if r != 0:
+            return (1, "CLOSED", "—", "—") if r in (10061, 111) else (2, "FILTERED", "—", "—")
+        try:
+            svc = socket.getservbyport(port, "tcp")
+        except OSError:
+            svc = SVC.get(port, "unknown")
+    except Exception:
+        return 2, "FILTERED", "—", "—"
+    finally:
+        sk.close()
+    banner = _banner(host, port)
+    return 0, "OPEN", svc, banner
+
 class PortScannerWorker(QThread):
+    """Scans ports via connect_ex() in background QThread, emits results per port."""
     progress = Signal(int, int, int, int)
     finished = Signal(int, int, int, int)
-    port_result = Signal(int, int, str, str)
+    port_result = Signal(int, int, str, str, str)  # port, state_int, state_str, service, banner
     def __init__(self, host, port_range):
         super().__init__()
         self.host, self.port_range, self._abort = host, port_range, False
     def run(self):
-        try: start, end = _range(self.port_range)
+        try:
+            start, end = _range(self.port_range)
         except ValueError:
             self.finished.emit(0, 0, 0, 0); return
         count = oc = cc = fc = 0
         for port in range(start, end + 1):
             if self._abort: break
-            state, ss, svc = _scan(self.host, port)
+            state, ss, svc, banner = _scan_port(self.host, port)
             count += 1
             if state == 0: oc += 1
             elif state == 1: cc += 1
             else: fc += 1
-            self.port_result.emit(port, state, ss, svc)
+            self.port_result.emit(port, state, ss, svc, banner)
             self.progress.emit(count, oc, cc, fc)
         self.finished.emit(end - start + 1, oc, cc, fc)
     def abort(self): self._abort = True
@@ -105,13 +130,14 @@ class ScannerWindow(QMainWindow):
         top.addWidget(scan_btn); top.addWidget(export_btn)
         lay.addLayout(top)
         self.table = QTableWidget()
-        self.table.setColumnCount(3)
-        self.table.setHorizontalHeaderLabels(["Port", "State", "Service"])
+        self.table.setColumnCount(4)
+        self.table.setHorizontalHeaderLabels(["Port", "State", "Service", "Banner"])
         self.table.setSortingEnabled(True)
         h = self.table.horizontalHeader()
         h.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         h.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        h.setSectionResizeMode(2, QHeaderView.Stretch)
+        h.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        h.setSectionResizeMode(3, QHeaderView.Stretch)
         lay.addWidget(self.table, 1)
         self.progress = QProgressBar(); self.progress.setFixedHeight(16)
         self.status_lbl = QLabel("Ready — enter a host and port range, then click Scan.")
@@ -144,14 +170,16 @@ class ScannerWindow(QMainWindow):
     def _on_progress(self, count, oc, cc, fc):
         self.progress.setValue(count)
         self.status_lbl.setText(f"Scanned {count} — {oc} open, {cc} closed, {fc} filtered")
-    def _on_port_result(self, port, state_int, state_str, service):
+    def _on_port_result(self, port, state_int, state_str, service, banner):
         row = self.table.rowCount(); self.table.insertRow(row)
         pi = QTableWidgetItem(str(port)); pi.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         si = QTableWidgetItem(state_str); si.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+        vi = QTableWidgetItem(service)
+        bi = QTableWidgetItem(banner)
         bg, fg = _ROW_COLORS.get(state_int, (QColor(G), QColor(T)))
         si.setBackground(bg); si.setForeground(fg)
         self.table.setItem(row, 0, pi); self.table.setItem(row, 1, si)
-        self.table.setItem(row, 2, QTableWidgetItem(service))
+        self.table.setItem(row, 2, vi); self.table.setItem(row, 3, bi)
     def _on_scan_finished(self, total, oc, cc, fc):
         self.status_lbl.setText(f"Done — {oc} open, {cc} closed, {fc} filtered (of {total} scanned)")
         self.progress.setValue(0)
@@ -164,32 +192,35 @@ class ScannerWindow(QMainWindow):
         try:
             with open(path, "w", newline="") as f:
                 w = csv.writer(f)
-                w.writerow(["Port", "State", "Service"])
+                w.writerow(["Port", "State", "Service", "Banner"])
                 for row in range(self.table.rowCount()):
-                    w.writerow([self.table.item(row, c).text() if self.table.item(row, c) else "" for c in range(3)])
+                    w.writerow([self.table.item(row, c).text() if self.table.item(row, c) else "" for c in range(4)])
             self.status_lbl.setText(f"Exported {self.table.rowCount()} rows")
         except Exception as e:
             self.status_lbl.setText(f"Export failed: {e}")
-
 def main():
     app = QApplication.instance() or QApplication(sys.argv)
     app.setApplicationName("GPU Unlock Scanner")
     w = ScannerWindow(); w.show()
     return app.exec()
-
 if __name__ == "__main__":
     sys.exit(main())
 # --------------------------------------------------------------------------- #
 # How to verify
 # --------------------------------------------------------------------------- #
-# This scanner uses socket.connect_ex() — compare results with Nmap/Zenmap:
+# This scanner uses socket.connect_ex() + banner grab via recv() — compare with Nmap/Zenmap:
 #   1. Nmap: nmap -sT -p 1-1024 <target> --open
-#   2. Wireshark: filter "tcp.port >= 1 && tcp.port <= 1024"
+#   2. Zenmap banner compare: nmap -sV -p <port> <ip>  (service version detection)
+#      → Compare Nmap's "service" output against this scanner's "Banner" column
+#   3. Wireshark: filter "tcp.port >= 1 && tcp.port <= 1024"
 #      → open: SYN+SYN-ACK | closed: SYN+RST-ACK | filtered: SYN only
-#   3. Disagreements: this scanner uses full connect() (like nmap -sT, not -sS);
+#   4. Disagreements: this scanner uses full connect() (like nmap -sT, not -sS);
 #      nmap -sS may mark open ports as "filtered"; firewalls dropping SYN without
 #      RST → FILTERED by both; cross-check: ss -tlnp (Linux) or netstat -an (Win)
-
+#   5. If banner is empty but Nmap shows a service via -sV:
+#      → Some services (SSH, IMAP, SMTP) wait for a client to send a byte first.
+#        Nmap -sV sends a probe payload; this scanner sends nothing.
+#      → Fix: implement protocol-aware probing (send appropriate bytes per service).
 # --------------------------------------------------------------------------- #
 # Why this works
 # --------------------------------------------------------------------------- #
@@ -198,6 +229,9 @@ if __name__ == "__main__":
 # Why QThread over threading.Thread: QThread Signals are delivered to the main thread's
 #   event loop — scan results update QTableWidget directly, no manual marshaling.
 #   threading.Thread would need invokeMethod or queues to update GUI safely.
+# Why a second socket for banner grab (not reuse connect_ex socket):
+#   connect_ex() may leave the socket in a state where recv() won't reliably read
+#   data. A fresh socket with settimeout(1.0) gives a clean connection for banner grab.
 # What breaks if you scan all 65535 ports:
 #   1. Performance: 65535×0.5s ≈ 9h. Fix: use nmap via subprocess.
 #   2. Memory: each port→QTableWidgetItem (~100+ MB at 65535). Fix: model/view + pagination.

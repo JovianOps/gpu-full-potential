@@ -1,5 +1,7 @@
 # GPU Unlock
 
+![GPU Unlock Logo](logo.jpg)
+
 Windows desktop GPU control app (PySide6) with 5 tabs: Dashboard, Tune, Auto Tune, Bench, Profiles.
 
 ## Quick Start
@@ -11,6 +13,11 @@ Double-click `START_GUI.bat` or run `dist/GPUUnlock.exe` directly.
 - Auto-tune algorithm
 - 30s stress benchmark
 - JSON profile management
+- OSD overlay (always-on-top temp/FPS/clock display, toggle via tray)
+- History graph (QChart, 5-min window, CSV export)
+- Cross-vendor support (AMD ADL/amdsmi, Intel Level Zero)
+- Auto-apply on boot (Task Scheduler)
+- Tray notifications (temp threshold alerts)
 
 ## Build
 ```bash

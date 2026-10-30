@@ -654,10 +654,15 @@ class NVAPI:
 # mVolt+ detection + control (optional — user installs separately)
 # --------------------------------------------------------------------------- #
 def find_mvoltplus() -> str | None:
+    """Find mVolt+ binary: check PATH first, then the bundled .external/mvolt dir."""
     for name in ("mVoltPlus", "mvoltplus", "mVolt+"):
         path = shutil.which(name)
         if path:
             return path
+    for name in ("mVoltPlus.exe", "mvoltplus.exe", "mVolt+.exe", "mvoltplus", "mVolt+"):
+        candidate = MVOLT_DIR / name
+        if candidate.is_file():
+            return str(candidate)
     return None
 
 
@@ -1103,7 +1108,11 @@ class SliderRow(QWidget):
         self.value_lbl = make_label(formatter(default), "sliderValue")
         header.addWidget(self.name_lbl)
         if locked:
-            header.addWidget(make_label("⚠️ needs mVolt+", "warn"))
+            if MVOLT_AVAILABLE and not mvoltplus_available():
+                warn_text = "⚠️ mVolt+ binary missing"
+            else:
+                warn_text = "⚠️ needs mVolt+"
+            header.addWidget(make_label(warn_text, "warn"))
         header.addStretch(1)
         header.addWidget(self.value_lbl)
 

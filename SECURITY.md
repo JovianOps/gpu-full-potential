@@ -1,7 +1,8 @@
 # Security
 
 ## Reporting Vulnerabilities
-Email: security@jovianops.com or open a private advisory on GitHub.
+Telegram user : @athallajovian
+
 
 ## Guidelines
 - Use official nvidia-smi commands only — no registry hacking

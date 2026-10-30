@@ -350,9 +350,10 @@ def is_admin() -> bool:
 def relaunch_as_admin() -> int:
     """Relaunch the current executable with elevated privileges."""
     if os.name == "nt":
-        params = [os.path.abspath(sys.argv[0])] + [f'"{a}"' for a in sys.argv[1:]]
+        exe = os.path.abspath(sys.argv[0])
+        params = [f'"{a}"' for a in sys.argv[1:]]
         cmd = " ".join(params)
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, cmd, None, 1)
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", exe, cmd, None, 1)
         return 0
     if shutil.which("pkexec"):
         cmd = [sys.executable] + sys.argv

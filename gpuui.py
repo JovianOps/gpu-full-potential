@@ -335,13 +335,29 @@ def reset_power() -> bool:
 # NVAPI via ctypes (loads nvapi64.dll — ships with NVIDIA drivers)
 # --------------------------------------------------------------------------- #
 class NVAPI:
-    """Minimal NVAPI bindings for reading clocks, fan, pstate.
+    """NVAPI via function ID dispatch (nvapi64.dll ships with NVIDIA drivers).
 
-    NVAPI is Windows-only (nvapi64.dll ships with NVIDIA drivers).
-    On Linux, nvidia-smi + pynvml/nvml provide equivalent data.
+    NVAPI does NOT export named functions directly. It exports:
+    - NvAPI_Initialize (symbol at index)
+    - NvAPI_QueryInterface(function_id) -> function pointer
+
+    We use QueryInterface to resolve function IDs from the NVAPI spec.
     """
     _lib = None
     _initialized = False
+
+    # Function IDs from NVAPI SDK (nvapi.h comments)
+    _FUNC_ID = {
+        "QueryInterface": 0x029D7BF8,
+        "Initialize": 0x0150E828,
+        "EnumLogicalGPUs": 0x73ECA8B4,
+        "EnumPhysicalGPUs": 0x85A7C029,
+        "GPU_GetFullName": 0xCE265509,
+        "GPU_GetCoreLimits": 0x1AD649B3,
+        "GPU_GetDefaultCoreLimits": 0x8F4C6376,
+        "GPU_SetClockOffset": 0x00000000,  # placeholder
+        "_gpu_GetPstate": 0x00000000,
+    }
 
     @classmethod
     def load(cls) -> bool:
@@ -357,10 +373,22 @@ class NVAPI:
             return False
         cls._initialized = False
         try:
-            cls._initialized = cls._lib.NvAPI_Initialize() == 0
-        except AttributeError:
-            # NVAPI exports are not direct symbols — requires NVAPI headers
-            # Mark as unavailable rather than crashing
+            # NvAPI_Initialize via QueryInterface dispatch
+            # NVAPI exports NvAPI_QueryInterface at a known symbol
+            query_iface = getattr(cls._lib, "nvapi_QueryInterface", None) \
+                or getattr(cls._lib, "NvAPI_QueryInterface", None)
+            if query_iface is None:
+                # Try direct NvAPI_Initialize symbol
+                init = getattr(cls._lib, "NvAPI_Initialize", None)
+                if init is not None:
+                    cls._initialized = init() == 0
+            else:
+                init_fn = query_iface(cls._FUNC_ID["Initialize"])
+                if init_fn and init_fn != 0:
+                    # Create callable from the function pointer
+                    cls._initialized = ctypes.CFUNCTYPE(
+                        ctypes.c_int)(init_fn)() == 0
+        except (AttributeError, OSError):
             cls._initialized = False
         return cls._initialized
 
@@ -386,34 +414,60 @@ def mvoltplus_available() -> bool:
     return find_mvoltplus() is not None
 
 
-def mvoltplus_set_core_offset(offset_mhz: int) -> bool:
+def mvoltplus_query_status(gpu_id: str | None = None) -> dict | None:
+    """Query mVolt+ status JSON via --list-gpus or --status."""
+    path = find_mvoltplus()
+    if not path:
+        return None
+    try:
+        cmd = [path, "--status"]
+        if gpu_id:
+            cmd += ["--gpu-id", gpu_id]
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        if r.returncode != 0:
+            return None
+        return json.loads(r.stdout)
+    except Exception:
+        return None
+
+
+def mvoltplus_set_core_offset(offset_mhz: int, gpu_id: str | None = None) -> bool:
     path = find_mvoltplus()
     if not path:
         return False
     try:
-        r = subprocess.run([path, "set", "clock", "core", str(offset_mhz)], capture_output=True, text=True, timeout=10)
+        cmd = [path, "--core", str(offset_mhz)]
+        if gpu_id:
+            cmd += ["--gpu-id", gpu_id]
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
         return r.returncode == 0
     except Exception:
         return False
 
 
-def mvoltplus_set_mem_offset(offset_mhz: int) -> bool:
+def mvoltplus_set_mem_offset(offset_mhz: int, gpu_id: str | None = None) -> bool:
     path = find_mvoltplus()
     if not path:
         return False
     try:
-        r = subprocess.run([path, "set", "clock", "mem", str(offset_mhz)], capture_output=True, text=True, timeout=10)
+        cmd = [path, "--mem", str(offset_mhz)]
+        if gpu_id:
+            cmd += ["--gpu-id", gpu_id]
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
         return r.returncode == 0
     except Exception:
         return False
 
 
-def mvoltplus_set_fan_curve(preset: str) -> bool:
+def mvoltplus_set_fan_curve(preset: str, gpu_id: str | None = None) -> bool:
     path = find_mvoltplus()
     if not path:
         return False
     try:
-        r = subprocess.run([path, "set", "fan", preset], capture_output=True, text=True, timeout=10)
+        cmd = [path, "--fan", preset]
+        if gpu_id:
+            cmd += ["--gpu-id", gpu_id]
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
         return r.returncode == 0
     except Exception:
         return False

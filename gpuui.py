@@ -1450,7 +1450,6 @@ class MainWindow(QMainWindow):
         root_layout.setSpacing(0)
 
         root_layout.addWidget(self._build_top_bar())
-        root_layout.addWidget(self._build_tab_bar())
 
         self.stack = QStackedWidget()
         self.status_lbl = make_label("", "statusBar")
@@ -1471,6 +1470,8 @@ class MainWindow(QMainWindow):
         ):
             self.stack.addWidget(page)
 
+        tab_bar = self._build_tab_bar()
+        root_layout.addWidget(tab_bar)
         # Wire page signals → MainWindow handlers (user actions flow OUT)
         self.tune_page.apply_requested.connect(self._on_tune_apply)
         self.tune_page.reset_requested.connect(self._on_tune_reset)

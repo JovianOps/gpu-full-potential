@@ -337,27 +337,50 @@ def reset_power() -> bool:
 class NVAPI:
     """NVAPI via function ID dispatch (nvapi64.dll ships with NVIDIA drivers).
 
-    NVAPI does NOT export named functions directly. It exports:
-    - NvAPI_Initialize (symbol at index)
-    - NvAPI_QueryInterface(function_id) -> function pointer
+    NVAPI exports ``nvapi_QueryInterface`` (a single symbol) which, given a
+    function ID, returns a function pointer. The IDs are sourced from the
+    LibreHardwareMonitor reference implementation (NvApi.cs), which mirrors
+    the official NVAPI SDK (nvapi.h) comments.
 
-    We use QueryInterface to resolve function IDs from the NVAPI spec.
+    Function IDs verified against LHM ``GetDelegate<T>(id)`` calls:
     """
     _lib = None
     _initialized = False
 
-    # Function IDs from NVAPI SDK (nvapi.h comments)
+    # Function IDs from LibreHardwareMonitor NvApi.cs::Initialize()
     _FUNC_ID = {
-        "QueryInterface": 0x029D7BF8,
-        "Initialize": 0x0150E828,
-        "EnumLogicalGPUs": 0x73ECA8B4,
-        "EnumPhysicalGPUs": 0x85A7C029,
-        "GPU_GetFullName": 0xCE265509,
-        "GPU_GetCoreLimits": 0x1AD649B3,
-        "GPU_GetDefaultCoreLimits": 0x8F4C6376,
-        "GPU_SetClockOffset": 0x00000000,  # placeholder
-        "_gpu_GetPstate": 0x00000000,
+        "Initialize":                   0x0150E828,
+        "EnumPhysicalGPUs":              0xE5AC921F,
+        "GPU_GetFullName":               0xCEEE8E9F,
+        "GPU_GetThermalSettings":        0xE3640A56,
+        "GPU_GetAllClocks":              0x1BD69F49,
+        "GPU_GetDynamicPstatesInfoEx":   0x60DED2ED,
+        "GPU_GetUsages":                 0x189A1FDF,
+        "GPU_GetCoolerSettings":         0xDA141340,
+        "GPU_SetCoolerLevels":           0x891FA0AE,
+        "GPU_GetMemoryInfo":             0x774AA982,
+        "GPU_GetMemoryInfoEx":           0xC0599498,
+        "GPU_GetPCIIdentifiers":         0x2DDFB66E,
+        "GPU_GetBusId":                  0x1BE0B8E5,
+        "GPU_GetBusSlotId":              0x2A0A350F,
+        "GPU_GetTachReading":            0x5F608315,
+        "GetDisplayDriverVersion":       0xF951A4D1,
+        "GPU_GetAllClockFrequencies":    0xDCB616C3,
+        "GPU_ClientFanCoolersGetStatus": 0x35AED5E8,
+        "GPU_ClientFanCoolersGetControl":0x814B209F,
+        "GPU_ClientFanCoolersSetControl":0xA58971A5,
+        "GPU_ClientPowerTopologyGetStatus": 0x0EDCF624E,
+        "GPU_GetThermalSensors":         0x65FE3AAD,
+        "GPU_ClientVoltRailsGetStatus":  0x465F9BCF,
     }
+
+    # Resolved function pointers (populated after Initialize succeeds)
+    _ptrs: dict[str, int] = {}
+
+    @classmethod
+    def _query_interface(cls, func_id: int) -> int:
+        """Resolve a function pointer via nvapi_QueryInterface."""
+        return cls._lib.nvapi_QueryInterface(ctypes.c_uint(func_id))
 
     @classmethod
     def load(cls) -> bool:
@@ -372,25 +395,29 @@ class NVAPI:
             cls._lib = None
             return False
         cls._initialized = False
+        cls._ptrs = {}
         try:
-            # NvAPI_Initialize via QueryInterface dispatch
-            # NVAPI exports NvAPI_QueryInterface at a known symbol
-            query_iface = getattr(cls._lib, "nvapi_QueryInterface", None) \
-                or getattr(cls._lib, "NvAPI_QueryInterface", None)
-            if query_iface is None:
-                # Try direct NvAPI_Initialize symbol
-                init = getattr(cls._lib, "NvAPI_Initialize", None)
-                if init is not None:
-                    cls._initialized = init() == 0
-            else:
-                init_fn = query_iface(cls._FUNC_ID["Initialize"])
-                if init_fn and init_fn != 0:
-                    # Create callable from the function pointer
-                    cls._initialized = ctypes.CFUNCTYPE(
-                        ctypes.c_int)(init_fn)() == 0
+            query_iface = cls._lib.nvapi_QueryInterface
+            init_ptr = query_iface(ctypes.c_uint(cls._FUNC_ID["Initialize"]))
+            if init_ptr:
+                init_fn = ctypes.CFUNCTYPE(ctypes.c_int)(init_ptr)
+                cls._initialized = init_fn() == 0
+                # Resolve remaining function pointers now that NVAPI is initialized
+                for name, fid in cls._FUNC_ID.items():
+                    if name == "Initialize":
+                        continue
+                    cls._ptrs[name] = query_iface(ctypes.c_uint(fid))
         except (AttributeError, OSError):
             cls._initialized = False
         return cls._initialized
+
+    @classmethod
+    def get_fn(cls, name: str):
+        """Return a callable for the resolved function pointer, or None."""
+        ptr = cls._ptrs.get(name)
+        if ptr:
+            return ctypes.CFUNCTYPE(ctypes.c_int)(ptr)
+        return None
 
     @classmethod
     def is_available(cls) -> bool:

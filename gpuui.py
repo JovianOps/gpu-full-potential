@@ -471,9 +471,69 @@ def set_power_limit(watts: int) -> bool:
     return r is not None and r.returncode == 0
 
 
-def reset_clocks() -> bool:
-    r = _run_smi(["-rgc"])
+@dataclass
+class SupportedClocks:
+    """Highest supported graphics and memory clock pair from the GPU's boost table."""
+
+    max_graphics: int  # MHz — highest Graphics clock in the supported table
+    max_memory: int    # MHz — highest Memory clock paired with max_graphics
+
+
+def query_supported_clocks() -> SupportedClocks | None:
+    """Parse nvidia-smi -q -d SUPPORTED_CLOCKS and return the highest graphics+memory pair.
+
+    No GPU lock tool on the market queries this table to force max boost.
+    """
+    r = _run_smi(["-q", "-d", "SUPPORTED_CLOCKS"])
+    if r is None:
+        return None
+    lines = r.stdout.splitlines()
+    max_graphics: int | None = None
+    max_memory: int | None = None
+    current_mem: int | None = None
+    for line in lines:
+        s = line.strip()
+        # Lines look like: "Memory : 6001 MHz" or "Graphics : 2205 MHz"
+        if s.startswith("Memory") and "MHz" in s:
+            current_mem = _int(s.split(":")[-1].replace("MHz", "").strip())
+            if max_memory is None or (current_mem and current_mem > max_memory):
+                max_memory = current_mem
+        elif s.startswith("Graphics") and "MHz" in s:
+            val = _int(s.split(":")[-1].replace("MHz", "").strip())
+            if val and (max_graphics is None or val > max_graphics):
+                # Track the memory that was paired with this graphics entry
+                if current_mem is not None:
+                    max_memory = current_mem
+                max_graphics = val
+    if max_graphics is None:
+        return None
+    return SupportedClocks(max_graphics=max_graphics, max_memory=max_memory or 0)
+
+
+def lock_gpu_clocks(graphics_mhz: int) -> bool:
+    """Force GPU core clocks to a fixed MHz via nvidia-smi -lgc.
+
+    On WDDM (Windows), this bypasses the driver's adaptive boost algorithm
+    and forces the GPU to always run at the specified frequency — the real
+    "unlock" that no tuning tool ever applies.
+    """
+    r = _run_smi(["-lgc", str(graphics_mhz)])
     return r is not None and r.returncode == 0
+
+
+def lock_mem_clocks(memory_mhz: int) -> bool:
+    """Force GPU memory clocks to a fixed MHz via nvidia-smi -lmc."""
+    r = _run_smi(["-lmc", str(memory_mhz)])
+    return r is not None and r.returncode == 0
+
+
+def reset_clocks() -> bool:
+    """Reset GPU and memory clocks to driver defaults (-rgc + -rmc)."""
+    r1 = _run_smi(["-rgc"])
+    r2 = _run_smi(["-rmc"])
+    ok1 = r1 is not None and r1.returncode == 0
+    ok2 = r2 is not None and r2.returncode == 0
+    return ok1 and ok2
 
 
 def reset_power() -> bool:
@@ -1070,6 +1130,7 @@ class TunePage(QWidget):
     # power_limit_w, core_offset_mhz, mem_offset_mhz, fan_pct
     apply_requested = Signal(int, int, int, int)
     reset_requested = Signal()
+    clock_lock_requested = Signal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -1096,10 +1157,14 @@ class TunePage(QWidget):
         buttons.setSpacing(8)
         apply_btn = make_button("Apply", "primary")
         reset_btn = make_button("Reset", "secondary")
+        self.lock_btn = make_button("🔒 Max Boost", "primary")
+        self.lock_btn.setFixedWidth(120)
         apply_btn.clicked.connect(self._on_apply)
         reset_btn.clicked.connect(self._on_reset)
+        self.lock_btn.clicked.connect(self._on_lock)
         buttons.addWidget(apply_btn, 1)
         buttons.addWidget(reset_btn, 1)
+        buttons.addWidget(self.lock_btn)
         layout.addLayout(buttons)
         layout.addStretch(1)
 
@@ -1136,6 +1201,9 @@ class TunePage(QWidget):
         for row in self.rows:
             row.reset()
         self.reset_requested.emit()
+
+    def _on_lock(self) -> None:
+        self.clock_lock_requested.emit()
 
 
 # --------------------------------------------------------------------------- #
@@ -1389,6 +1457,7 @@ class MainWindow(QMainWindow):
         # Wire page signals → MainWindow handlers (user actions flow OUT)
         self.tune_page.apply_requested.connect(self._on_tune_apply)
         self.tune_page.reset_requested.connect(self._on_tune_reset)
+        self.tune_page.clock_lock_requested.connect(self._on_tune_lock)
         self.auto_page.start_requested.connect(self._on_auto_start)
         self.auto_page.apply_best_requested.connect(self._on_auto_apply_best)
         self.bench_page.run_requested.connect(self._on_bench_run)
@@ -1563,6 +1632,25 @@ class MainWindow(QMainWindow):
         self.tune_page.mem_row.reset()
         self.tune_page.fan_row.reset()
         self.set_status("All clocks and power reset to defaults")
+
+    def _on_tune_lock(self) -> None:
+        """Lock GPU and memory clocks to the maximum supported boost frequency.
+
+        This is the real GPU 'unlock' — nvidia-smi -lgc forces the GPU to
+        always run at max boost, bypassing the driver's adaptive downclocking.
+        No other consumer tuning tool does this.
+        """
+        clocks = query_supported_clocks()
+        if clocks is None:
+            self.set_status("Could not query supported clocks")
+            return
+        ok_g = lock_gpu_clocks(clocks.max_graphics)
+        ok_m = lock_mem_clocks(clocks.max_memory) if clocks.max_memory > 0 else True
+        if ok_g and ok_m:
+            mem_str = f", mem {clocks.max_memory} MHz" if clocks.max_memory > 0 else ""
+            self.set_status(f"Clocks locked: {clocks.max_graphics} MHz{mem_str} (use Reset to clear)")
+        else:
+            self.set_status("Failed to lock clocks (see log)")
 
     def _on_auto_start(self) -> None:
         self.auto_page.set_running(True)

@@ -62,6 +62,7 @@ MISSING = "--"
 TEMP_WARN_C = 70  # temp value turns yellow at/above this
 TEMP_HOT_C = 80  # temp value turns red at/above this
 TEMP_ALERT_C = 85  # tray notification fires above this
+TEMP_LOCK_MAX_C = 75  # skip Max Boost lock above this (risk of thermal throttle)
 
 WINDOW_W, WINDOW_H = 600, 400
 OVERLAY_W, OVERLAY_H = 160, 90
@@ -1639,7 +1640,20 @@ class MainWindow(QMainWindow):
         This is the real GPU 'unlock' — nvidia-smi -lgc forces the GPU to
         always run at max boost, bypassing the driver's adaptive downclocking.
         No other consumer tuning tool does this.
+
+        Temperature guard: if the GPU is already at or above
+        TEMP_LOCK_MAX_C, locking to max boost would push it into thermal
+        throttling — which is slower than the driver's adaptive algorithm.
+        Skip the lock and warn the user instead.
         """
+        stats = query_gpu()
+        if stats is not None and stats.temp is not None and stats.temp >= TEMP_LOCK_MAX_C:
+            self.set_status(
+                f"⚠️ GPU at {stats.temp:g}°C — too hot for Max Boost (would throttle). "
+                f"Cool down below {TEMP_LOCK_MAX_C}°C to lock."
+            )
+            return
+
         clocks = query_supported_clocks()
         if clocks is None:
             self.set_status("Could not query supported clocks")

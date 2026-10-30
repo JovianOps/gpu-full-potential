@@ -7,8 +7,9 @@ No display value is hardcoded: anything not yet supplied is shown as '--'.
 from __future__ import annotations
 
 import ctypes
-import json
 import logging
+import argparse
+import json
 import os
 import shutil
 import subprocess
@@ -18,11 +19,13 @@ from pathlib import Path
 from string import Template
 from typing import Callable
 
-from PySide6.QtCore import QEvent, Qt, QTimer, Signal
-from PySide6.QtGui import QAction, QColor, QIcon, QPixmap
+from PySide6.QtCore import QEvent, QPoint, QPointF, QSize, Qt, QTimer, Signal
+from PySide6.QtGui import QAction, QColor, QFont, QIcon, QPixmap, QPen, QRegion
+from PySide6.QtCharts import QChart, QLineSeries, QValueAxis
 from PySide6.QtWidgets import (
     QApplication,
     QButtonGroup,
+    QCheckBox,
     QFrame,
     QGridLayout,
     QHBoxLayout,
@@ -58,8 +61,10 @@ WARN = "#d9a93a"
 MISSING = "--"
 TEMP_WARN_C = 70  # temp value turns yellow at/above this
 TEMP_HOT_C = 80  # temp value turns red at/above this
+TEMP_ALERT_C = 85  # tray notification fires above this
 
 WINDOW_W, WINDOW_H = 600, 400
+OVERLAY_W, OVERLAY_H = 160, 90
 StatusFn = Callable[[str], None]
 PROFILES_DIR = Path(os.environ.get("APPDATA", str(Path.home() / ".local/share"))) / "GPUUnlock" / "profiles"
 
@@ -195,6 +200,120 @@ class GpuStats:
     fan_pct: int | float | None = None  # %
     sm_clock: int | float | None = None  # MHz
     mem_clock: int | float | None = None  # MHz
+
+
+# --------------------------------------------------------------------------- #
+# Cross-vendor detection
+# --------------------------------------------------------------------------- #
+def detect_gpu_vendor() -> str | None:
+    """Detect GPU vendor from nvidia-smi / rocm-smi / intel_gpu_top presence."""
+    if shutil.which("nvidia-smi"):
+        return "nvidia"
+    if shutil.which("rocm-smi"):
+        return "amd"
+    if shutil.which("intel_gpu_top") or shutil.which("intel_gpu_frequency"):
+        return "intel"
+    return None
+
+
+def find_amdsmi() -> str | None:
+    """Find AMD ADL or amdsmi binary for cross-vendor control."""
+    for name in ("amdsmi", "rocm-smi", "amdctl"):
+        path = shutil.which(name)
+        if path:
+            return path
+    return None
+
+
+def find_intel_gpu_tools() -> str | None:
+    """Find Intel Level Zero CLI tools."""
+    for name in ("zangband", "zeinfo", "intel_gpu_top"):
+        path = shutil.which(name)
+        if path:
+            return path
+    return None
+
+
+def amdsmi_set_power(watts: int) -> bool:
+    """Set AMD power limit via amdsmi. Checks returncode."""
+    path = find_amdsmi()
+    if not path:
+        return False
+    try:
+        r = subprocess.run([path, "--power", str(watts)], capture_output=True, text=True, timeout=10)
+        return r.returncode == 0
+    except Exception as exc:
+        log.error("amdsmi --power %d failed: %s", watts, exc)
+        return False
+
+
+def amdsmi_set_core(offset_mhz: int) -> bool:
+    """Set AMD core clock offset via amdsmi. Checks returncode."""
+    path = find_amdsmi()
+    if not path:
+        return False
+    try:
+        r = subprocess.run([path, "--sensors", "--clock", str(offset_mhz)], capture_output=True, text=True, timeout=10)
+        return r.returncode == 0
+    except Exception as exc:
+        log.error("amdsmi --core failed: %s", exc)
+        return False
+
+
+# --------------------------------------------------------------------------- #
+# Task Scheduler integration (auto-apply on boot)
+# --------------------------------------------------------------------------- #
+def _schtasks_available() -> bool:
+    return os.name == "nt" and shutil.which("schtasks") is not None
+
+
+def schedule_autorun(profile_name: str = "gaming") -> bool:
+    """Register a Task Scheduler entry that runs on login. Checks returncode."""
+    if os.name != "nt" or not _schtasks_available():
+        return False
+    task_name = "GPUUnlockAutoApply"
+    exe = os.path.abspath(sys.argv[0])
+    args = f'--apply "{profile_name}"'
+    cmd = [
+        "schtasks", "/Create", "/F",
+        "/TN", task_name,
+        "/TR", f'"{exe}" {args}',
+        "/SC", "ONLOGON",
+        "/RL", "HIGHEST",
+    ]
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+        if r.returncode != 0:
+            log.error("schtasks create failed rc=%d: %s", r.returncode, r.stderr.strip())
+            return False
+        return True
+    except Exception as exc:
+        log.error("schtasks exception: %s", exc)
+        return False
+
+
+def unschedule_autorun() -> bool:
+    """Remove the auto-apply task."""
+    if os.name != "nt" or not _schtasks_available():
+        return False
+    task_name = "GPUUnlockAutoApply"
+    try:
+        r = subprocess.run(["schtasks", "/Delete", "/F", "/TN", task_name], capture_output=True, text=True, timeout=15)
+        return r.returncode == 0
+    except Exception as exc:
+        log.error("schtasks delete exception: %s", exc)
+        return False
+
+
+def is_autorun_scheduled() -> bool:
+    """Check if the auto-apply task exists."""
+    if os.name != "nt" or not _schtasks_available():
+        return False
+    try:
+        r = subprocess.run(["schtasks", "/Query", "/TN", "GPUUnlockAutoApply"], capture_output=True, text=True, timeout=10)
+        return r.returncode == 0
+    except Exception:
+        return False
 
 
 # --------------------------------------------------------------------------- #
@@ -630,9 +749,142 @@ def delta_html(delta: int | float | None) -> str:
     if delta is None:
         return ""
     color = ACCENT if delta >= 0 else RED
-    return f'<span style="color:{color};">({delta:+g})</span>'
+    return f'<span style="color:{color}">({delta:+g})</span>'
 
 
+# --------------------------------------------------------------------------- #
+# Overlay (OSD) — always-on-top, frameless
+# --------------------------------------------------------------------------- #
+class OverlayWidget(QWidget):
+    """Minimal always-on-top OSD: temp + FPS + core clock."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(
+            parent,
+            Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.Tool
+            | Qt.WindowType.WindowStaysOnTopHint,
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self.setFixedSize(OVERLAY_W, OVERLAY_H)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(8, 6, 8, 6)
+        layout.setSpacing(2)
+
+        self.temp_lbl = make_label(MISSING, "cardValue")
+        self.clock_lbl = make_label(MISSING, "cardValue")
+        self.fps_lbl = make_label(MISSING, "cardValue")
+        self.temp_lbl.setStyleSheet("font-size: 13px;")
+        self.clock_lbl.setStyleSheet("font-size: 11px; color: " + GRAY + ";")
+        self.fps_lbl.setStyleSheet("font-size: 11px; color: " + GRAY + ";")
+        for lbl in (self.temp_lbl, self.clock_lbl, self.fps_lbl):
+            lbl.setAlignment(Qt.AlignmentFlag.AlignRight)
+            layout.addWidget(lbl)
+
+        self._drag_active = False
+        self._drag_pos: QPoint | None = None
+        self._last_fps: float | None = None
+
+    def position_at(self, x: int, y: int) -> None:
+        geo = self.geometry()
+        geo.moveTo(x - geo.width() // 2, y)
+        self.setGeometry(geo)
+
+    def update_display(self, stats: GpuStats, fps: float | None = None) -> None:
+        self._last_fps = fps
+        if stats.temp is not None:
+            self.temp_lbl.setText(f"{stats.temp:g}°C")
+            self.temp_lbl.setStyleSheet(
+                f"color: {temp_color(stats.temp)}; font-size: 13px; font-weight: bold;"
+            )
+        else:
+            self.temp_lbl.setText(MISSING)
+        self.clock_lbl.setText(fmt(stats.sm_clock, "{:g} MHz") if stats.sm_clock else "—")
+        self.fps_lbl.setText(f"{fps:g} FPS" if fps is not None else "— FPS")
+
+    def mousePressEvent(self, event) -> None:
+        if event.button() == Qt.MouseButton.LeftButton:
+            self._drag_active = True
+            self._drag_pos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
+
+    def mouseMoveEvent(self, event) -> None:
+        if self._drag_active and self._drag_pos is not None:
+            self.move(event.globalPosition().toPoint() - self._drag_pos)
+
+    def mouseReleaseEvent(self, event) -> None:
+        self._drag_active = False
+        self._drag_pos = None
+
+
+# --------------------------------------------------------------------------- #
+# History graph — QChart-based line graph for temp/clock/power
+# --------------------------------------------------------------------------- #
+class HistoryGraph(QWidget):
+    """QChart line graph showing last 5 minutes of GPU metrics."""
+
+    MAX_POINTS = 150  # 5 min at 2s intervals
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._series: dict[str, QLineSeries] = {}
+        self._chart = QChart()
+        self._chart.legend().hide()
+        self._chart.setBackgroundBrush(QColor(BG))
+        for ax in ("x", "y"):
+            axis = QValueAxis()
+            axis.setLabelsColor(GRAY)
+            self._chart.addAxis(axis, Qt.Orientation.X if ax == "x" else Qt.Orientation.Y)
+        self._chart.create_default_axes()
+        self._chart.getAxisY().setRange(0, 100)
+        self._chart.layout().setContentsMargins(0, 0, 0, 0)
+
+    def add_series(self, name: str, color: str) -> None:
+        series = QLineSeries()
+        pen = QPen(QColor(color))
+        pen.setWidthF(2)
+        series.setPen(pen)
+        self._series[name] = series
+        self._chart.addSeries(series)
+
+    def _x_to_time(self, index: int) -> float:
+        return (self.MAX_POINTS - index) / 30.0
+
+    def update_point(self, series_name: str, value: float) -> None:
+        series = self._series.get(series_name)
+        if series is None:
+            return
+        pts = series.points()
+        pts.append(QPointF(len(pts) if pts else 0, value))
+        if len(pts) > self.MAX_POINTS:
+            pts = pts[-self.MAX_POINTS:]
+        series.replace(pts)
+        for s in self._series.values():
+            self._chart.getAxisX().setRange(0, max(len(s.points()) - 1, 1))
+
+    def to_csv(self) -> str:
+        lines = ["timestamp,temp_c,sm_clock_mhz,power_w"]
+        max_len = max((len(s.points()) for s in self._series.values()), default=0)
+        for i in range(max_len):
+            row = [str(self._x_to_time(i))]
+            for name in ("temp", "clock", "power"):
+                pts = self._series.get(name)
+                row.append(str(pts[i].y()) if pts and i < len(pts.points()) else "")
+            lines.append(",".join(row))
+        return "\n".join(lines)
+
+    def clear(self) -> None:
+        for s in self._series.values():
+            s.clear()
+        self._chart.getAxisY().setRange(0, 100)
+
+    def sizeHint(self):
+        return QSize(400, 200)
+
+
+# --------------------------------------------------------------------------- #
+# Formatting helpers
+# --------------------------------------------------------------------------- #
 def make_tray_icon() -> QIcon:
     pixmap = QPixmap(32, 32)
     pixmap.fill(QColor(ACCENT))
@@ -995,6 +1247,7 @@ class ProfilesPage(QWidget):
     save_requested = Signal(str)
     apply_requested = Signal(str)
     delete_requested = Signal(str)
+    autorun_toggled = Signal(bool)
 
     def __init__(self) -> None:
         super().__init__()
@@ -1028,7 +1281,27 @@ class ProfilesPage(QWidget):
         bottom.addWidget(delete_btn, 1)
         layout.addLayout(bottom)
 
+        # --- Auto-apply on boot checkbox ---
+        autorun_layout = QHBoxLayout()
+        autorun_layout.setSpacing(8)
+        self.autorun_cb = QCheckBox("Auto-apply on boot")
+        self.autorun_cb.setFixedHeight(24)
+        self.autorun_cb.setChecked(is_autorun_scheduled())
+        self.autorun_cb.stateChanged.connect(self._on_autorun_toggled)
+        autorun_layout.addWidget(self.autorun_cb)
+        autorun_layout.addStretch(1)
+        layout.addLayout(autorun_layout)
+
         self.refresh_profiles()
+
+    def _on_autorun_toggled(self, state: int) -> None:
+        checked = state == Qt.CheckState.Checked
+        if checked:
+            ok = schedule_autorun("gaming")
+        else:
+            ok = unschedule_autorun()
+        if ok:
+            self.autorun_toggled.emit(checked)
 
     def refresh_profiles(self) -> None:
         self.profile_list.clear()
@@ -1068,6 +1341,10 @@ class MainWindow(QMainWindow):
         self.reset_on_exit = False
         self._quitting = False
         self._tray_ok = QSystemTrayIcon.isSystemTrayAvailable()
+        self._overlay: OverlayWidget | None = None
+        self._history: HistoryGraph | None = None
+        self._temp_alerted = False
+        self._vendor = detect_gpu_vendor() or "nvidia"
 
         self.setWindowTitle("GPU Unlock")
         self.setWindowIcon(make_tray_icon())
@@ -1118,6 +1395,7 @@ class MainWindow(QMainWindow):
         self.profiles_page.apply_requested.connect(self._on_profile_apply)
         self.profiles_page.delete_requested.connect(self._on_profile_delete)
         self.profiles_page.save_requested.connect(self._on_profile_save)
+        self.profiles_page.autorun_toggled.connect(self._on_autorun_toggled)
 
         root_layout.addWidget(self.stack, 1)
         root_layout.addWidget(self.status_lbl)
@@ -1180,11 +1458,37 @@ class MainWindow(QMainWindow):
         exit_action.triggered.connect(self._exit_from_tray)
         menu.addAction(show_action)
         menu.addSeparator()
+        self._overlay_action = QAction("Show Overlay", menu, checkable=True)
+        self._overlay_action.toggled.connect(self._toggle_overlay)
+        menu.addAction(self._overlay_action)
+        menu.addSeparator()
         menu.addAction(exit_action)
 
         self.tray.setContextMenu(menu)
         self.tray.activated.connect(self._on_tray_activated)
         self.tray.show()
+
+    def _toggle_overlay(self, checked: bool) -> None:
+        if checked:
+            if self._overlay is None:
+                self._overlay = OverlayWidget()
+                self._overlay.position_at(600, 420)
+            self._overlay.show()
+        else:
+            if self._overlay is not None:
+                self._overlay.hide()
+
+    def _toggle_history(self, checked: bool) -> None:
+        if checked and self._history is None:
+            self._history = HistoryGraph()
+            self._history.add_series("temp", RED)
+            self._history.add_series("clock", ACCENT)
+            self._history.add_series("power", YELLOW)
+        if self._history is not None:
+            if checked:
+                self._history.show()
+            else:
+                self._history.hide()
 
     # ----- data setters (input: data flows IN) --------------------------- #
     def set_status(self, message: str) -> None:
@@ -1195,6 +1499,25 @@ class MainWindow(QMainWindow):
 
     def update_stats(self, stats: GpuStats) -> None:
         self.dashboard_page.update_stats(stats)
+        if self._overlay is not None:
+            self._overlay.update_display(stats)
+        if self._history is not None:
+            if stats.temp is not None:
+                self._history.update_point("temp", stats.temp)
+            if stats.sm_clock is not None:
+                self._history.update_point("clock", stats.sm_clock)
+            if stats.power is not None:
+                self._history.update_point("power", stats.power)
+        # Tray notification on temp threshold
+        if self._tray_ok and self.tray is not None and stats.temp is not None:
+            if stats.temp >= TEMP_ALERT_C and not self._temp_alerted:
+                self.tray.showMessage(
+                    "GPU Unlock", f"⚠️ GPU hit {stats.temp:g}°C",
+                    QSystemTrayIcon.MessageIcon.Warning, 3000,
+                )
+                self._temp_alerted = True
+            elif stats.temp < TEMP_ALERT_C:
+                self._temp_alerted = False
 
     # ----- data refresh --------------------------------------------------- #
     def _detect_gpu(self) -> None:
@@ -1362,6 +1685,21 @@ class MainWindow(QMainWindow):
         else:
             self.set_status(f"Failed to save profile '{name}'")
 
+    def _on_autorun_toggled(self, enabled: bool) -> None:
+        profile = self.profiles_page.selected_profile() or "gaming"
+        if enabled:
+            if schedule_autorun(profile):
+                self.set_status(f"Auto-apply on boot enabled (profile: {profile})")
+            else:
+                self.set_status("Failed to register auto-apply task")
+                self.profiles_page.autorun_cb.setChecked(False)
+        else:
+            if unschedule_autorun():
+                self.set_status("Auto-apply on boot disabled")
+            else:
+                self.set_status("Failed to remove auto-apply task")
+                self.profiles_page.autorun_cb.setChecked(True)
+
     # ----- tray / window state --------------------------------------------- #
     def _on_tray_activated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
         if reason in (
@@ -1425,6 +1763,28 @@ class MainWindow(QMainWindow):
 
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+
+    parser = argparse.ArgumentParser(prog="GPUUnlock", description="GPU control app")
+    parser.add_argument("--apply", metavar="PROFILE", help="Apply a profile silently (for scheduled task)")
+    opts = parser.parse_args()
+
+    # Silent profile apply mode (for Task Scheduler / auto-apply on boot)
+    if opts.apply:
+        data = load_profile(opts.apply)
+        if data is None:
+            log.error("Profile '%s' not found", opts.apply)
+            return 1
+        pl = data.get("power_limit")
+        core = data.get("core_offset", 0)
+        mem = data.get("mem_offset", 0)
+        if pl and set_power_limit(pl):
+            if MVOLT_AVAILABLE:
+                mvoltplus_set_core_offset(core)
+                mvoltplus_set_mem_offset(mem)
+            log.info("Applied profile '%s': PL %dW, core %+dMHz, mem %+dMHz", opts.apply, pl, core, mem)
+            return 0
+        log.error("Failed to apply profile '%s'", opts.apply)
+        return 1
 
     app = QApplication.instance() or QApplication(sys.argv)
 

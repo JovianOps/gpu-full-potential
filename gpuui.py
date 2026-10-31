@@ -743,31 +743,47 @@ def furmark_stress(duration_ms: int = 30000) -> subprocess.Popen | None:
 
 
 def download_furmark(dest_dir: Path | None = None) -> str | None:
-    """Download FurMark 2 win64 portable ZIP into .external/furmark/ if not present.
+    """Download FurMark 2 portable into .external/furmark/ if not present.
 
-    Returns the path to FurMark.exe on success, None on failure.
+    Auto-selects the correct platform build (win64 ZIP on Windows,
+    linux64 7zip on Linux). Returns the path to the FurMark binary on success.
     """
     if dest_dir is None:
         dest_dir = FURMARK_DIR
     dest_dir.mkdir(parents=True, exist_ok=True)
-    exe_path = dest_dir / "FurMark.exe"
+    exe_name = "FurMark.exe" if os.name == "nt" else "FurMark"
+    exe_path = dest_dir / exe_name
     if exe_path.is_file():
         return str(exe_path)
     import urllib.request
-    zip_url = "https://www.geeks3d.com/dl/get/830"  # FurMark 2 win64 ZIP
+    if os.name == "nt":
+        zip_url = "https://www.geeks3d.com/dl/get/830"  # FurMark 2 win64 ZIP
+    else:
+        zip_url = "https://www.geeks3d.com/dl/get/833"  # FurMark 2 linux64 7z
     zip_path = dest_dir / "furmark.zip"
     try:
         urllib.request.urlretrieve(zip_url, str(zip_path))
     except Exception as exc:
         log.error("FurMark download failed: %s", exc)
         return None
-    import zipfile
+    # Extract: ZIP on Windows, 7z on Linux
     try:
-        with zipfile.ZipFile(zip_path) as zf:
-            zf.extractall(dest_dir)
+        if zip_path.suffix == ".zip":
+            import zipfile
+            with zipfile.ZipFile(zip_path) as zf:
+                zf.extractall(dest_dir)
+        else:
+            # Linux uses 7zip — try py7zr or 7z command
+            import subprocess as sp
+            r = sp.run(["7z", "x", str(zip_path), f"-o{dest_dir}", "-y"],
+                       capture_output=True, timeout=60)
+            if r.returncode != 0:
+                log.error("7z extract failed: %s", r.stderr)
+                zip_path.unlink(missing_ok=True)
+                return None
         zip_path.unlink(missing_ok=True)
-        # Find the actual FurMark.exe in extracted files
-        for candidate in dest_dir.rglob("FurMark.exe"):
+        # Find the actual binary in extracted files
+        for candidate in dest_dir.rglob(exe_name):
             return str(candidate)
         return None
     except Exception as exc:

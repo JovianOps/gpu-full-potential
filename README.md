@@ -44,6 +44,6 @@ python -m PyInstaller gpuui.py --onefile --windowed --name GPUUnlock
 ```
 
 ## Platform
-- **Windows**: NVIDIA GPU + nvidia-smi, UAC admin required
-- **Linux**: Ubuntu/Arch/Mint support, pkexec for privileges
-- **NVAPI ctypes for clock/fan/VF reading**
+- **Windows**: NVIDIA GPU + nvidia-smi, UAC admin required. FurMark auto-downloads to `.external/furmark/`
+- **Linux**: Ubuntu/Arch/Mint support, pkexec for privileges. FurMark auto-downloads (linux64 build, requires `7z` extractor)
+- **NVAPI ctypes for clock/fan/VF reading** (Windows only)

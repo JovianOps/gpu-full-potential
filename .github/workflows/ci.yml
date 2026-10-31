@@ -19,6 +19,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
@@ -28,9 +30,9 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
       - name: Lint
-        run: ruff check gpuui.py tests/ 2>/dev/null || echo "ruff not available"
+        run: ruff check gpuui.py tests/
       - name: Test
-        run: python -m pytest tests/ -v 2>/dev/null || echo "No tests dir yet"
+        run: python -m pytest tests/ -v
 
   pyinstaller-smoke:
     runs-on: windows-latest

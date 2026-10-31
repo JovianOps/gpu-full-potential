@@ -388,6 +388,8 @@ def _run_smi(args: list[str]) -> subprocess.CompletedProcess | None:
 
 def _int(v) -> int | None:
     try:
+        if isinstance(v, str) and "." in v:
+            return int(float(v))
         return int(v)
     except (ValueError, TypeError):
         return None

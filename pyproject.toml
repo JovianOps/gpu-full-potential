@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpuunlock"
+version = "2.1.0"
+description = "PySide6 GPU control UI with nvidia-smi + mVolt+ integration"
+requires-python = ">=3.10"
+dependencies = [
+    "PySide6>=6.8.0,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-qt>=4.4",
+    "ruff>=0.8.0",
+]
+
+[project.scripts]
+gpuunlock = "gpuui:main"

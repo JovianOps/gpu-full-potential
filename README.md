@@ -5,6 +5,19 @@
 Windows desktop GPU control app (PySide6) with 5 tabs: Dashboard, Tune, Auto Tune, Bench, Profiles.
 
 ## Quick Start
+
+Install dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Then run the app:
+
+```bash
+python gpuui.py
+```
+
 Double-click `START_GUI.bat` or run `dist/GPUUnlock.exe` directly.
 
 ## Features
@@ -27,4 +40,4 @@ python -m PyInstaller gpuui.py --onefile --windowed --name GPUUnlock
 ## Platform
 - **Windows**: NVIDIA GPU + nvidia-smi, UAC admin required
 - **Linux**: Ubuntu/Arch/Mint support, pkexec for privileges
-- NVAPI ctypes for clock/fan/VF reading
+- **NVAPI ctypes for clock/fan/VF reading**

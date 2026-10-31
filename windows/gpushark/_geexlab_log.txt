@@ -1,0 +1,710 @@
+21:59:37:965(0000001)	[info ]	GeeXLab Player v0.66.0.0 (Oct  8 2025@09:36:06)
+21:59:37:965(0000002)	[info ]	Scriptable Proto-Engine (Lua, Python, GLSL, OpenGL, Vulkan)
+21:59:37:965(0000003)	[info ]	(C)2009-2025 Geeks3D
+21:59:37:965(0000004)	[info ]	Homepage: https://geeks3d.com/geexlab/
+21:59:37:965(0000005)	[info ]	Discord server: https://www.geeks3d.com/discord/
+21:59:37:965(0000006)	[info ]	GeeXLab Player is starting up...
+21:59:37:965(0000007)	[info ]	[stb] STB image loader. Supported formats: *.JPEG, *.PNG, *.TGA, *.BMP, *.PSD, *.GIF, *.HDR, *.PIC
+21:59:37:965(0000008)	[info ]	[tinyexr] EXR image loader.
+21:59:37:965(0000009)	[info ]	[lib3ds] Lib3ds loader (core plugin).
+21:59:38:028(0000010)	[info ]	[ObjLoaderV1] OBJ 3D loader (core plugin).
+21:59:38:028(0000011)	[info ]	[ObjLoaderV2] OBJ loader based on Tiny OBJ Loader (core plugin).
+21:59:38:028(0000012)	[info ]	[STL] STL (StereoLithography) 3D loader (core plugin).
+21:59:38:028(0000013)	[info ]	[glTF] glTF 3D loader (core plugin).
+21:59:38:028(0000014)	[info ]	[SQLite3] SQLite3 version 3.50.4
+21:59:38:028(0000015)	[info ]	GraphX Core 0.60.0.0 (codename: Dirac) initialization ok.
+21:59:38:028(0000016)	[info ]	GeeXLab home directory: D:\FurMark2_x64\gpushark\
+21:59:38:028(0000017)	[info ]	Windows version: Windows 11 build 26200
+21:59:38:028(0000018)	[info ]	SW platform type: Windows 64-bit
+21:59:38:201(0000019)	[info ]	Plugins search path: D:\FurMark2_x64\gpushark\plugins/;D:\FurMark2_x64\gpushark\plugins/physx5/;D:\FurMark2_x64\gpushark\plugins/physx4/;D:\FurMark2_x64\gpushark\plugins/physx3/;D:\FurMark2_x64\gpushark\plugins/ffmpeg/;D:\FurMark2_x64\gpushark\plugins/assimp/;D:\FurMark2_x64\gpushark\plugins/imagemagick/;D:\FurMark2_x64\gpushark\plugins/fmod/;D:\FurMark2_x64\gpushark\plugins/python/;D:\FurMark2_x64\gpushark\plugins/flex/;D:\FurMark2_x64\gpushark\plugins/freeimage/;D:\FurMark2_x64\gpushark\plugins/openvr/;D:\FurMark2_x64\gpushark\plugins/leap/;D:\FurMark2_x64\gpushark\plugins/anttweakbar/;
+21:59:38:201(0000020)	[info ]	Current user: RDC
+21:59:38:201(0000021)	[info ]	Python 3.7 home: [C:/Users/RDC/AppData/Local/Programs/Python/Python37/]
+21:59:38:201(0000022)	[info ]	Python 3.8 home: [C:/Users/RDC/AppData/Local/Programs/Python/Python38/]
+21:59:38:201(0000023)	[info ]	Python 3.9 home: [C:/Users/RDC/AppData/Local/Programs/Python/Python39/]
+21:59:38:201(0000024)	[info ]	Python 3.10 home: [C:/Users/RDC/AppData/Local/Programs/Python/Python310/]
+21:59:38:201(0000025)	[info ]	Python 3.11 home: [C:/Users/RDC/AppData/Local/Programs/Python/Python311/]
+21:59:38:201(0000026)	[info ]	Python 3.12 home: [C:/Users/RDC/AppData/Local/Programs/Python/Python312/]
+21:59:38:201(0000027)	[info ]	Python 3.13 home: [C:/Users/RDC/AppData/Local/Programs/Python/Python313/]
+21:59:38:201(0000028)	[info ]	Python 3.14 home: [C:/Users/RDC/AppData/Local/Programs/Python/Python314/]
+21:59:38:201(0000029)	[info ]	App directory: D:\FurMark2_x64\gpushark\
+21:59:38:201(0000030)	[info ]	Scripting libs directory: D:\FurMark2_x64\gpushark\libs\
+21:59:38:281(0000031)	[info ]	[GpuMonitor] Operating system detected: Windows 11 build 26200
+21:59:38:281(0000032)	[info ]	[GpuMonitor] NV/R530+: physical GPU(s): 1 - logical GPU(s): 1
+21:59:38:360(0000033)	[info ]	[GpuMonitor] Num GPUs detected: 1
+21:59:38:360(0000034)	[info ]	[GpuMonitor] > GPU0
+21:59:38:360(0000035)	[info ]	[GpuMonitor]   - name: NVIDIA GeForce GTX 1650
+21:59:38:360(0000036)	[info ]	[GpuMonitor]   - PCI codes: 0x10DE-0x1F0A
+21:59:38:360(0000037)	[info ]	[GpuMonitor]   - Bus ID: 7
+21:59:38:360(0000038)	[info ]	[GpuMonitor]   - VBIOS: 90.06.5e.00.74
+21:59:38:360(0000039)	[info ]	[GpuMonitor]   - core temperature: 40 degC
+21:59:38:376(0000040)	[info ]	================================================================================
+21:59:38:407(0000041)	[info ]	current DPI: xdpi(96), ydpi(96) - DPI scaling: 1.0
+21:59:38:423(0000042)	[info ]	GPU Shark FM2 Edition - demo started with an OpenGL 4.6 context.
+21:59:38:423(0000043)	[info ]	Quick OpenGL information (use /glinfo for more limits):
+21:59:38:423(0000044)	[info ]	GL_RENDERER: NVIDIA GeForce GTX 1650/PCIe/SSE2
+21:59:38:423(0000045)	[info ]	GL_VENDOR: NVIDIA Corporation
+21:59:38:423(0000046)	[info ]	GL_VERSION: 4.6.0 NVIDIA 616.56
+21:59:38:423(0000047)	[info ]	GL_SHADING_LANGUAGE_VERSION: 4.60 NVIDIA
+21:59:38:423(0000048)	[info ]	OpenGL version detected: 4.6
+21:59:38:423(0000049)	[info ]	OpenGL extensions: 434
+21:59:38:423(0000050)	[info ]	OpenGL hardware limits:
+21:59:38:423(0000051)	[info ]	  GL_MAX_VERTEX_ATTRIBS: 16
+21:59:38:423(0000052)	[info ]	  GL_MAX_VERTEX_UNIFORM_COMPONENTS: 4096
+21:59:38:423(0000053)	[info ]	  GL_MAX_FRAGMENT_UNIFORM_COMPONENTS: 4096
+21:59:38:423(0000054)	[info ]	  GL_MAX_TEXTURE_SIZE: 32768
+21:59:38:423(0000055)	[info ]	  GL_MAX_VIEWPORT_DIMS: 32768 32768
+21:59:38:423(0000056)	[info ]	  GL_MAX_TEXTURE_IMAGE_UNITS: 32
+21:59:38:423(0000057)	[info ]	  GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: 192
+21:59:38:423(0000058)	[info ]	Render window (GPU Shark FM2 Edition) initialized (renderer type: OpenGL)
+21:59:38:535(0000059)	[info ]	[Lua] Lua version: Lua 5.4.8
+21:59:38:551(0000060)	[info ]	[Lua] LuaFileSystem initialized ok.
+21:59:38:551(0000061)	[info ]	[Lua] UTF8 initialized ok.
+21:59:38:551(0000062)	[info ]	[Lua] LuaSocket core initialized ok.
+21:59:38:551(0000063)	[info ]	[Lua] Mime core initialized ok.
+21:59:38:551(0000064)	[info ]	[Lua] LuaSQL SQLite3 driver initialized ok.
+21:59:38:566(0000065)	[info ]	[Lua] LuaGL initialized ok.
+21:59:38:566(0000066)	[info ]	[Lua] initialization ok.
+21:59:38:582(0000067)	[info ]	Scene compilation: SUCCESS.
+21:59:38:694(0000068)	[info ]	GPU Shark FM2 Edition version 2.10.0.0
+21:59:38:805(0000069)	[info ]	[CUDA] Simple NVIDIA CUDA plugin for API capability queries
+21:59:38:871(0000070)	[info ]	[CUDA] num of CUDA-capable devices: 1
+21:59:38:871(0000071)	[info ]	[CUDA] version of CUDA supported by the driver: 13.4.0 (13040)
+21:59:38:871(0000072)	[info ]	[CUDA] device 0 => NVIDIA GeForce GTX 1650
+21:59:38:871(0000073)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_CLOCK_RATE => 1755000
+21:59:38:871(0000074)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_MEMORY_CLOCK_RATE => 6001000
+21:59:38:871(0000075)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_GLOBAL_MEMORY_BUS_WIDTH => 128
+21:59:38:871(0000076)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_PCI_BUS_ID => 7
+21:59:38:871(0000077)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE => 1048576
+21:59:38:871(0000078)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_{MAJOR|MINOR} => 7.5
+21:59:38:871(0000079)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT => 14
+21:59:38:871(0000080)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_ASYNC_ENGINE_COUNT => 6
+21:59:38:871(0000081)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY => 65536
+21:59:38:871(0000082)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK => 49152
+21:59:38:871(0000083)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_MULTIPROCESSOR => 65536
+21:59:38:871(0000084)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK => 1024
+21:59:38:871(0000085)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_WARP_SIZE => 32
+21:59:38:871(0000086)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR => 1024
+21:59:38:871(0000087)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_{X|Y|Z} => 2147483647 | 65535 | 65535
+21:59:38:871(0000088)	[info ]	[CUDA] 	CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_{X|Y|Z} => 1024 | 1024 | 64
+21:59:38:931(0000089)	[info ]	[OpenCL] initializing OpenCL data...
+21:59:39:010(0000090)	[info ]	[OpenCL] found 1 OpenCL platform(s)
+21:59:39:010(0000091)	[info ]	[OpenCL] Platform 0
+21:59:39:010(0000092)	[info ]	[OpenCL] - vendor: NVIDIA Corporation
+21:59:39:010(0000093)	[info ]	[OpenCL] - name: NVIDIA CUDA
+21:59:39:010(0000094)	[info ]	[OpenCL] - profile: FULL_PROFILE
+21:59:39:010(0000095)	[info ]	[OpenCL] - version: OpenCL 3.0 CUDA 13.4.62
+21:59:39:010(0000096)	[info ]	[OpenCL] - CL_PLATFORM_NUMERIC_VERSION: 12582912.0.0
+21:59:39:010(0000097)	[info ]	[OpenCL] - CL_PLATFORM_HOST_TIMER_RESOLUTION: 0
+21:59:39:010(0000098)	[info ]	[OpenCL] Platform 0 - devices count: 1
+21:59:39:010(0000099)	[info ]	[OpenCL] - Device 0 - name: NVIDIA GeForce GTX 1650 - Compute units: 14 @ 1755MHz
+21:59:39:010(0000100)	[info ]	[OpenCL] OpenCL data initialized ok.
+21:59:39:010(0000101)	[info ]	============================================
+21:59:39:010(0000102)	[info ]	- Vulkan Info
+21:59:39:010(0000103)	[info ]	============================================
+21:59:39:042(0000104)	[info ]	[Vulkan2] Vulkan renderer plugin (Windows, Linux)
+21:59:39:060(0000105)	[info ]	[Vulkan2] instance API version: 4198400 (Vulkan 1.1)
+21:59:39:060(0000106)	[info ]	[Vulkan2] [ GPU 0 ]--------------------------------------
+21:59:39:060(0000107)	[info ]	[Vulkan2] - name: NVIDIA GeForce GTX 1650
+21:59:39:060(0000108)	[info ]	[Vulkan2] - PCI-ID: 10DE-1F0A
+21:59:39:060(0000109)	[info ]	[Vulkan2] - NVIDIA driver version: 616.56_0.0
+21:59:39:060(0000110)	[info ]	[Vulkan2] - Vulkan API version: 1.4.351
+21:59:39:060(0000111)	[info ]	[Vulkan2] - Device extensions: 274
+21:59:39:131(0000112)	[info ]	# of instance extensions: 20
+21:59:39:131(0000113)	[info ]	- VK_KHR_device_group_creation
+21:59:39:131(0000114)	[info ]	- VK_KHR_display
+21:59:39:131(0000115)	[info ]	- VK_KHR_external_fence_capabilities
+21:59:39:131(0000116)	[info ]	- VK_KHR_external_memory_capabilities
+21:59:39:131(0000117)	[info ]	- VK_KHR_external_semaphore_capabilities
+21:59:39:131(0000118)	[info ]	- VK_KHR_get_display_properties2
+21:59:39:131(0000119)	[info ]	- VK_KHR_get_physical_device_properties2
+21:59:39:131(0000120)	[info ]	- VK_KHR_get_surface_capabilities2
+21:59:39:131(0000121)	[info ]	- VK_KHR_surface
+21:59:39:131(0000122)	[info ]	- VK_KHR_surface_maintenance1
+21:59:39:131(0000123)	[info ]	- VK_KHR_surface_protected_capabilities
+21:59:39:131(0000124)	[info ]	- VK_KHR_win32_surface
+21:59:39:131(0000125)	[info ]	- VK_EXT_debug_report
+21:59:39:131(0000126)	[info ]	- VK_EXT_debug_utils
+21:59:39:131(0000127)	[info ]	- VK_EXT_direct_mode_display
+21:59:39:131(0000128)	[info ]	- VK_EXT_surface_maintenance1
+21:59:39:131(0000129)	[info ]	- VK_EXT_swapchain_colorspace
+21:59:39:131(0000130)	[info ]	- VK_NV_external_memory_capabilities
+21:59:39:131(0000131)	[info ]	- VK_KHR_portability_enumeration
+21:59:39:131(0000132)	[info ]	- VK_LUNARG_direct_driver_loading
+21:59:39:131(0000133)	[info ]	# of instance layers: 2
+21:59:39:131(0000134)	[info ]	- VK_LAYER_NV_optimus
+21:59:39:131(0000135)	[info ]	- VK_LAYER_NV_present
+21:59:39:131(0000136)	[info ]	# of Vulkan devices: 1
+21:59:39:131(0000137)	[info ]	- Device 1
+21:59:39:131(0000138)	[info ]	  - name: NVIDIA GeForce GTX 1650
+21:59:39:131(0000139)	[info ]	  - device type: VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU
+21:59:39:131(0000140)	[info ]	  - device ID: 10DE-1F0A
+21:59:39:131(0000141)	[info ]	  - API version: 1.4.351
+21:59:39:131(0000142)	[info ]	  - NVIDIA driver version: 616.56.0.0
+21:59:39:131(0000143)	[info ]	  - VK_KHR_ray_tracing_pipeline information:
+21:59:39:132(0000144)	[info ]	    - shaderGroupHandleSize: 32
+21:59:39:132(0000145)	[info ]	    - maxRayRecursionDepth: 31
+21:59:39:132(0000146)	[info ]	    - maxShaderGroupStride: 4096
+21:59:39:132(0000147)	[info ]	    - shaderGroupBaseAlignment: 64
+21:59:39:132(0000148)	[info ]	    - shaderGroupHandleCaptureReplaySize: 64
+21:59:39:132(0000149)	[info ]	    - maxRayDispatchInvocationCount: 1073741824
+21:59:39:132(0000150)	[info ]	    - shaderGroupHandleAlignment: 32
+21:59:39:132(0000151)	[info ]	    - maxRayHitAttributeSize: 32
+21:59:39:132(0000152)	[info ]	    - maxRayDispatchInvocationCount: 1073741824
+21:59:39:132(0000153)	[info ]	  - VK_KHR_acceleration_structure information:
+21:59:39:132(0000154)	[info ]	    - maxGeometryCount: 16777215
+21:59:39:132(0000155)	[info ]	    - maxInstanceCount: 16777215
+21:59:39:132(0000156)	[info ]	    - maxPrimitiveCount: 536870911
+21:59:39:132(0000157)	[info ]	  - VK_KHR_driver_properties information:
+21:59:39:132(0000158)	[info ]	    - driverName: NVIDIA
+21:59:39:132(0000159)	[info ]	    - driverID_str: VK_DRIVER_ID_NVIDIA_PROPRIETARY_KHR
+21:59:39:132(0000160)	[info ]	    - driverID: 4
+21:59:39:132(0000161)	[info ]	    - conformanceVersion: 1.4.3.3
+21:59:39:132(0000162)	[info ]	    - driverInfo: 616.56
+21:59:39:132(0000163)	[info ]	  - # of extensions: 274
+21:59:39:132(0000164)	[info ]	  - VK_KHR_16bit_storage
+21:59:39:132(0000165)	[info ]	  - VK_KHR_8bit_storage
+21:59:39:132(0000166)	[info ]	  - VK_KHR_acceleration_structure
+21:59:39:132(0000167)	[info ]	  - VK_KHR_bind_memory2
+21:59:39:132(0000168)	[info ]	  - VK_KHR_buffer_device_address
+21:59:39:132(0000169)	[info ]	  - VK_KHR_calibrated_timestamps
+21:59:39:132(0000170)	[info ]	  - VK_KHR_compute_shader_derivatives
+21:59:39:132(0000171)	[info ]	  - VK_KHR_cooperative_matrix
+21:59:39:132(0000172)	[info ]	  - VK_KHR_copy_commands2
+21:59:39:132(0000173)	[info ]	  - VK_KHR_copy_memory_indirect
+21:59:39:132(0000174)	[info ]	  - VK_KHR_create_renderpass2
+21:59:39:132(0000175)	[info ]	  - VK_KHR_dedicated_allocation
+21:59:39:132(0000176)	[info ]	  - VK_KHR_deferred_host_operations
+21:59:39:132(0000177)	[info ]	  - VK_KHR_depth_clamp_zero_one
+21:59:39:132(0000178)	[info ]	  - VK_KHR_depth_stencil_resolve
+21:59:39:132(0000179)	[info ]	  - VK_KHR_descriptor_update_template
+21:59:39:132(0000180)	[info ]	  - VK_KHR_device_address_commands
+21:59:39:132(0000181)	[info ]	  - VK_KHR_device_fault
+21:59:39:132(0000182)	[info ]	  - VK_KHR_device_group
+21:59:39:132(0000183)	[info ]	  - VK_KHR_draw_indirect_count
+21:59:39:132(0000184)	[info ]	  - VK_KHR_driver_properties
+21:59:39:132(0000185)	[info ]	  - VK_KHR_dynamic_rendering
+21:59:39:132(0000186)	[info ]	  - VK_KHR_dynamic_rendering_local_read
+21:59:39:132(0000187)	[info ]	  - VK_KHR_external_fence
+21:59:39:132(0000188)	[info ]	  - VK_KHR_external_fence_win32
+21:59:39:132(0000189)	[info ]	  - VK_KHR_external_memory
+21:59:39:132(0000190)	[info ]	  - VK_KHR_external_memory_win32
+21:59:39:132(0000191)	[info ]	  - VK_KHR_external_semaphore
+21:59:39:132(0000192)	[info ]	  - VK_KHR_external_semaphore_win32
+21:59:39:132(0000193)	[info ]	  - VK_KHR_format_feature_flags2
+21:59:39:132(0000194)	[info ]	  - VK_KHR_fragment_shader_barycentric
+21:59:39:132(0000195)	[info ]	  - VK_KHR_fragment_shading_rate
+21:59:39:132(0000196)	[info ]	  - VK_KHR_get_memory_requirements2
+21:59:39:132(0000197)	[info ]	  - VK_KHR_global_priority
+21:59:39:132(0000198)	[info ]	  - VK_KHR_image_format_list
+21:59:39:132(0000199)	[info ]	  - VK_KHR_imageless_framebuffer
+21:59:39:132(0000200)	[info ]	  - VK_KHR_index_type_uint8
+21:59:39:132(0000201)	[info ]	  - VK_KHR_internally_synchronized_queues
+21:59:39:132(0000202)	[info ]	  - VK_KHR_line_rasterization
+21:59:39:132(0000203)	[info ]	  - VK_KHR_load_store_op_none
+21:59:39:132(0000204)	[info ]	  - VK_KHR_maintenance1
+21:59:39:132(0000205)	[info ]	  - VK_KHR_maintenance10
+21:59:39:132(0000206)	[info ]	  - VK_KHR_maintenance11
+21:59:39:132(0000207)	[info ]	  - VK_KHR_maintenance2
+21:59:39:132(0000208)	[info ]	  - VK_KHR_maintenance3
+21:59:39:132(0000209)	[info ]	  - VK_KHR_maintenance4
+21:59:39:132(0000210)	[info ]	  - VK_KHR_maintenance5
+21:59:39:132(0000211)	[info ]	  - VK_KHR_maintenance6
+21:59:39:132(0000212)	[info ]	  - VK_KHR_maintenance7
+21:59:39:132(0000213)	[info ]	  - VK_KHR_maintenance8
+21:59:39:132(0000214)	[info ]	  - VK_KHR_maintenance9
+21:59:39:132(0000215)	[info ]	  - VK_KHR_map_memory2
+21:59:39:132(0000216)	[info ]	  - VK_KHR_multiview
+21:59:39:132(0000217)	[info ]	  - VK_KHR_pipeline_binary
+21:59:39:132(0000218)	[info ]	  - VK_KHR_pipeline_executable_properties
+21:59:39:132(0000219)	[info ]	  - VK_KHR_pipeline_library
+21:59:39:132(0000220)	[info ]	  - VK_KHR_present_id
+21:59:39:132(0000221)	[info ]	  - VK_KHR_present_id2
+21:59:39:132(0000222)	[info ]	  - VK_KHR_present_mode_fifo_latest_ready
+21:59:39:132(0000223)	[info ]	  - VK_KHR_present_wait
+21:59:39:132(0000224)	[info ]	  - VK_KHR_present_wait2
+21:59:39:132(0000225)	[info ]	  - VK_KHR_push_descriptor
+21:59:39:132(0000226)	[info ]	  - VK_KHR_ray_tracing_maintenance1
+21:59:39:132(0000227)	[info ]	  - VK_KHR_ray_tracing_pipeline
+21:59:39:132(0000228)	[info ]	  - VK_KHR_relaxed_block_layout
+21:59:39:132(0000229)	[info ]	  - VK_KHR_robustness2
+21:59:39:132(0000230)	[info ]	  - VK_KHR_sampler_mirror_clamp_to_edge
+21:59:39:132(0000231)	[info ]	  - VK_KHR_sampler_ycbcr_conversion
+21:59:39:132(0000232)	[info ]	  - VK_KHR_separate_depth_stencil_layouts
+21:59:39:132(0000233)	[info ]	  - VK_KHR_shader_abort
+21:59:39:132(0000234)	[info ]	  - VK_KHR_shader_atomic_int64
+21:59:39:132(0000235)	[info ]	  - VK_KHR_shader_bfloat16
+21:59:39:132(0000236)	[info ]	  - VK_KHR_shader_clock
+21:59:39:132(0000237)	[info ]	  - VK_KHR_shader_constant_data
+21:59:39:132(0000238)	[info ]	  - VK_KHR_shader_draw_parameters
+21:59:39:132(0000239)	[info ]	  - VK_KHR_shader_expect_assume
+21:59:39:132(0000240)	[info ]	  - VK_KHR_shader_float16_int8
+21:59:39:132(0000241)	[info ]	  - VK_KHR_shader_float_controls
+21:59:39:132(0000242)	[info ]	  - VK_KHR_shader_float_controls2
+21:59:39:132(0000243)	[info ]	  - VK_KHR_shader_fma
+21:59:39:132(0000244)	[info ]	  - VK_KHR_shader_integer_dot_product
+21:59:39:132(0000245)	[info ]	  - VK_KHR_shader_maximal_reconvergence
+21:59:39:132(0000246)	[info ]	  - VK_KHR_shader_non_semantic_info
+21:59:39:132(0000247)	[info ]	  - VK_KHR_shader_quad_control
+21:59:39:132(0000248)	[info ]	  - VK_KHR_shader_relaxed_extended_instruction
+21:59:39:132(0000249)	[info ]	  - VK_KHR_shader_subgroup_extended_types
+21:59:39:132(0000250)	[info ]	  - VK_KHR_shader_subgroup_rotate
+21:59:39:132(0000251)	[info ]	  - VK_KHR_shader_subgroup_uniform_control_flow
+21:59:39:132(0000252)	[info ]	  - VK_KHR_shader_terminate_invocation
+21:59:39:132(0000253)	[info ]	  - VK_KHR_shader_untyped_pointers
+21:59:39:132(0000254)	[info ]	  - VK_KHR_spirv_1_4
+21:59:39:132(0000255)	[info ]	  - VK_KHR_storage_buffer_storage_class
+21:59:39:132(0000256)	[info ]	  - VK_KHR_swapchain
+21:59:39:132(0000257)	[info ]	  - VK_KHR_swapchain_maintenance1
+21:59:39:132(0000258)	[info ]	  - VK_KHR_swapchain_mutable_format
+21:59:39:132(0000259)	[info ]	  - VK_KHR_synchronization2
+21:59:39:132(0000260)	[info ]	  - VK_KHR_timeline_semaphore
+21:59:39:132(0000261)	[info ]	  - VK_KHR_unified_image_layouts
+21:59:39:132(0000262)	[info ]	  - VK_KHR_uniform_buffer_standard_layout
+21:59:39:132(0000263)	[info ]	  - VK_KHR_variable_pointers
+21:59:39:133(0000264)	[info ]	  - VK_KHR_vertex_attribute_divisor
+21:59:39:133(0000265)	[info ]	  - VK_KHR_video_decode_h264
+21:59:39:133(0000266)	[info ]	  - VK_KHR_video_decode_h265
+21:59:39:133(0000267)	[info ]	  - VK_KHR_video_decode_queue
+21:59:39:133(0000268)	[info ]	  - VK_KHR_video_decode_vp9
+21:59:39:133(0000269)	[info ]	  - VK_KHR_video_encode_h264
+21:59:39:133(0000270)	[info ]	  - VK_KHR_video_encode_h265
+21:59:39:133(0000271)	[info ]	  - VK_KHR_video_encode_intra_refresh
+21:59:39:133(0000272)	[info ]	  - VK_KHR_video_encode_quantization_map
+21:59:39:133(0000273)	[info ]	  - VK_KHR_video_encode_queue
+21:59:39:133(0000274)	[info ]	  - VK_KHR_video_maintenance1
+21:59:39:133(0000275)	[info ]	  - VK_KHR_video_maintenance2
+21:59:39:133(0000276)	[info ]	  - VK_KHR_video_queue
+21:59:39:133(0000277)	[info ]	  - VK_KHR_vulkan_memory_model
+21:59:39:133(0000278)	[info ]	  - VK_KHR_win32_keyed_mutex
+21:59:39:133(0000279)	[info ]	  - VK_KHR_workgroup_memory_explicit_layout
+21:59:39:133(0000280)	[info ]	  - VK_KHR_zero_initialize_workgroup_memory
+21:59:39:133(0000281)	[info ]	  - VK_EXT_4444_formats
+21:59:39:133(0000282)	[info ]	  - VK_EXT_attachment_feedback_loop_dynamic_state
+21:59:39:133(0000283)	[info ]	  - VK_EXT_attachment_feedback_loop_layout
+21:59:39:133(0000284)	[info ]	  - VK_EXT_blend_operation_advanced
+21:59:39:133(0000285)	[info ]	  - VK_EXT_border_color_swizzle
+21:59:39:133(0000286)	[info ]	  - VK_EXT_buffer_device_address
+21:59:39:133(0000287)	[info ]	  - VK_EXT_calibrated_timestamps
+21:59:39:133(0000288)	[info ]	  - VK_EXT_color_write_enable
+21:59:39:133(0000289)	[info ]	  - VK_EXT_conditional_rendering
+21:59:39:133(0000290)	[info ]	  - VK_EXT_conservative_rasterization
+21:59:39:133(0000291)	[info ]	  - VK_EXT_custom_border_color
+21:59:39:133(0000292)	[info ]	  - VK_EXT_custom_resolve
+21:59:39:133(0000293)	[info ]	  - VK_EXT_depth_bias_control
+21:59:39:133(0000294)	[info ]	  - VK_EXT_depth_clamp_control
+21:59:39:133(0000295)	[info ]	  - VK_EXT_depth_clamp_zero_one
+21:59:39:133(0000296)	[info ]	  - VK_EXT_depth_clip_control
+21:59:39:133(0000297)	[info ]	  - VK_EXT_depth_clip_enable
+21:59:39:133(0000298)	[info ]	  - VK_EXT_depth_range_unrestricted
+21:59:39:133(0000299)	[info ]	  - VK_EXT_descriptor_buffer
+21:59:39:133(0000300)	[info ]	  - VK_EXT_descriptor_heap
+21:59:39:133(0000301)	[info ]	  - VK_EXT_descriptor_indexing
+21:59:39:133(0000302)	[info ]	  - VK_EXT_device_address_binding_report
+21:59:39:133(0000303)	[info ]	  - VK_EXT_device_fault
+21:59:39:133(0000304)	[info ]	  - VK_EXT_device_generated_commands
+21:59:39:133(0000305)	[info ]	  - VK_EXT_device_memory_report
+21:59:39:133(0000306)	[info ]	  - VK_EXT_discard_rectangles
+21:59:39:133(0000307)	[info ]	  - VK_EXT_dynamic_rendering_unused_attachments
+21:59:39:133(0000308)	[info ]	  - VK_EXT_extended_dynamic_state
+21:59:39:133(0000309)	[info ]	  - VK_EXT_extended_dynamic_state2
+21:59:39:133(0000310)	[info ]	  - VK_EXT_extended_dynamic_state3
+21:59:39:133(0000311)	[info ]	  - VK_EXT_external_memory_host
+21:59:39:133(0000312)	[info ]	  - VK_EXT_fragment_shader_interlock
+21:59:39:133(0000313)	[info ]	  - VK_EXT_full_screen_exclusive
+21:59:39:133(0000314)	[info ]	  - VK_EXT_graphics_pipeline_library
+21:59:39:133(0000315)	[info ]	  - VK_EXT_hdr_metadata
+21:59:39:133(0000316)	[info ]	  - VK_EXT_host_image_copy
+21:59:39:133(0000317)	[info ]	  - VK_EXT_host_query_reset
+21:59:39:133(0000318)	[info ]	  - VK_EXT_image_2d_view_of_3d
+21:59:39:133(0000319)	[info ]	  - VK_EXT_image_robustness
+21:59:39:133(0000320)	[info ]	  - VK_EXT_image_sliced_view_of_3d
+21:59:39:133(0000321)	[info ]	  - VK_EXT_image_view_min_lod
+21:59:39:133(0000322)	[info ]	  - VK_EXT_index_type_uint8
+21:59:39:133(0000323)	[info ]	  - VK_EXT_inline_uniform_block
+21:59:39:133(0000324)	[info ]	  - VK_EXT_legacy_vertex_attributes
+21:59:39:133(0000325)	[info ]	  - VK_EXT_line_rasterization
+21:59:39:133(0000326)	[info ]	  - VK_EXT_load_store_op_none
+21:59:39:133(0000327)	[info ]	  - VK_EXT_memory_budget
+21:59:39:133(0000328)	[info ]	  - VK_EXT_memory_decompression
+21:59:39:133(0000329)	[info ]	  - VK_EXT_memory_priority
+21:59:39:133(0000330)	[info ]	  - VK_EXT_mesh_shader
+21:59:39:133(0000331)	[info ]	  - VK_EXT_multi_draw
+21:59:39:133(0000332)	[info ]	  - VK_EXT_mutable_descriptor_type
+21:59:39:133(0000333)	[info ]	  - VK_EXT_nested_command_buffer
+21:59:39:133(0000334)	[info ]	  - VK_EXT_non_seamless_cube_map
+21:59:39:133(0000335)	[info ]	  - VK_EXT_pageable_device_local_memory
+21:59:39:133(0000336)	[info ]	  - VK_EXT_pci_bus_info
+21:59:39:133(0000337)	[info ]	  - VK_EXT_pipeline_creation_cache_control
+21:59:39:133(0000338)	[info ]	  - VK_EXT_pipeline_creation_feedback
+21:59:39:133(0000339)	[info ]	  - VK_EXT_pipeline_library_group_handles
+21:59:39:133(0000340)	[info ]	  - VK_EXT_pipeline_robustness
+21:59:39:133(0000341)	[info ]	  - VK_EXT_post_depth_coverage
+21:59:39:133(0000342)	[info ]	  - VK_EXT_present_mode_fifo_latest_ready
+21:59:39:133(0000343)	[info ]	  - VK_EXT_present_timing
+21:59:39:133(0000344)	[info ]	  - VK_EXT_primitive_restart_index
+21:59:39:133(0000345)	[info ]	  - VK_EXT_primitive_topology_list_restart
+21:59:39:133(0000346)	[info ]	  - VK_EXT_primitives_generated_query
+21:59:39:133(0000347)	[info ]	  - VK_EXT_private_data
+21:59:39:133(0000348)	[info ]	  - VK_EXT_provoking_vertex
+21:59:39:133(0000349)	[info ]	  - VK_EXT_queue_family_foreign
+21:59:39:133(0000350)	[info ]	  - VK_EXT_ray_tracing_invocation_reorder
+21:59:39:133(0000351)	[info ]	  - VK_EXT_robustness2
+21:59:39:133(0000352)	[info ]	  - VK_EXT_sample_locations
+21:59:39:133(0000353)	[info ]	  - VK_EXT_sampler_filter_minmax
+21:59:39:133(0000354)	[info ]	  - VK_EXT_scalar_block_layout
+21:59:39:133(0000355)	[info ]	  - VK_EXT_separate_stencil_usage
+21:59:39:133(0000356)	[info ]	  - VK_EXT_shader_64bit_indexing
+21:59:39:133(0000357)	[info ]	  - VK_EXT_shader_atomic_float
+21:59:39:133(0000358)	[info ]	  - VK_EXT_shader_demote_to_helper_invocation
+21:59:39:133(0000359)	[info ]	  - VK_EXT_shader_image_atomic_int64
+21:59:39:133(0000360)	[info ]	  - VK_EXT_shader_long_vector
+21:59:39:133(0000361)	[info ]	  - VK_EXT_shader_module_identifier
+21:59:39:133(0000362)	[info ]	  - VK_EXT_shader_object
+21:59:39:133(0000363)	[info ]	  - VK_EXT_shader_replicated_composites
+21:59:39:133(0000364)	[info ]	  - VK_EXT_shader_split_barrier
+21:59:39:133(0000365)	[info ]	  - VK_EXT_shader_subgroup_ballot
+21:59:39:133(0000366)	[info ]	  - VK_EXT_shader_subgroup_partitioned
+21:59:39:133(0000367)	[info ]	  - VK_EXT_shader_subgroup_vote
+21:59:39:133(0000368)	[info ]	  - VK_EXT_shader_uniform_buffer_unsized_array
+21:59:39:133(0000369)	[info ]	  - VK_EXT_shader_viewport_index_layer
+21:59:39:133(0000370)	[info ]	  - VK_EXT_subgroup_size_control
+21:59:39:133(0000371)	[info ]	  - VK_EXT_swapchain_maintenance1
+21:59:39:133(0000372)	[info ]	  - VK_EXT_texel_buffer_alignment
+21:59:39:133(0000373)	[info ]	  - VK_EXT_tooling_info
+21:59:39:133(0000374)	[info ]	  - VK_EXT_transform_feedback
+21:59:39:133(0000375)	[info ]	  - VK_EXT_vertex_attribute_divisor
+21:59:39:133(0000376)	[info ]	  - VK_EXT_vertex_attribute_robustness
+21:59:39:133(0000377)	[info ]	  - VK_EXT_vertex_input_dynamic_state
+21:59:39:133(0000378)	[info ]	  - VK_EXT_ycbcr_2plane_444_formats
+21:59:39:133(0000379)	[info ]	  - VK_EXT_ycbcr_image_arrays
+21:59:39:133(0000380)	[info ]	  - VK_EXT_zero_initialize_device_memory
+21:59:39:133(0000381)	[info ]	  - VK_NV_acquire_winrt_display
+21:59:39:133(0000382)	[info ]	  - VK_NV_clip_space_w_scaling
+21:59:39:133(0000383)	[info ]	  - VK_NV_compute_shader_derivatives
+21:59:39:133(0000384)	[info ]	  - VK_NV_cooperative_matrix
+21:59:39:133(0000385)	[info ]	  - VK_NV_cooperative_matrix2
+21:59:39:133(0000386)	[info ]	  - VK_NV_cooperative_matrix_decode_vector
+21:59:39:133(0000387)	[info ]	  - VK_NV_cooperative_vector
+21:59:39:133(0000388)	[info ]	  - VK_NV_copy_memory_indirect
+21:59:39:133(0000389)	[info ]	  - VK_NV_corner_sampled_image
+21:59:39:133(0000390)	[info ]	  - VK_NV_coverage_reduction_mode
+21:59:39:133(0000391)	[info ]	  - VK_NV_cuda_kernel_launch
+21:59:39:133(0000392)	[info ]	  - VK_NV_dedicated_allocation
+21:59:39:133(0000393)	[info ]	  - VK_NV_dedicated_allocation_image_aliasing
+21:59:39:133(0000394)	[info ]	  - VK_NV_descriptor_pool_overallocation
+21:59:39:133(0000395)	[info ]	  - VK_NV_device_diagnostic_checkpoints
+21:59:39:133(0000396)	[info ]	  - VK_NV_device_diagnostics_config
+21:59:39:133(0000397)	[info ]	  - VK_NV_device_generated_commands
+21:59:39:133(0000398)	[info ]	  - VK_NV_device_generated_commands_compute
+21:59:39:133(0000399)	[info ]	  - VK_NV_disk_cache_utils
+21:59:39:133(0000400)	[info ]	  - VK_NV_external_memory
+21:59:39:133(0000401)	[info ]	  - VK_NV_external_memory_win32
+21:59:39:133(0000402)	[info ]	  - VK_NV_fill_rectangle
+21:59:39:133(0000403)	[info ]	  - VK_NV_fragment_coverage_to_color
+21:59:39:133(0000404)	[info ]	  - VK_NV_fragment_shader_barycentric
+21:59:39:133(0000405)	[info ]	  - VK_NV_fragment_shading_rate_enums
+21:59:39:133(0000406)	[info ]	  - VK_NV_framebuffer_mixed_samples
+21:59:39:133(0000407)	[info ]	  - VK_NV_geometry_shader_passthrough
+21:59:39:133(0000408)	[info ]	  - VK_NV_inherited_viewport_scissor
+21:59:39:133(0000409)	[info ]	  - VK_NV_internal_handle
+21:59:39:133(0000410)	[info ]	  - VK_NV_internal_nvpresent
+21:59:39:133(0000411)	[info ]	  - VK_NV_linear_color_attachment
+21:59:39:133(0000412)	[info ]	  - VK_NV_low_latency
+21:59:39:133(0000413)	[info ]	  - VK_NV_low_latency2
+21:59:39:133(0000414)	[info ]	  - VK_NV_memory_decompression
+21:59:39:133(0000415)	[info ]	  - VK_NV_mesh_shader
+21:59:39:133(0000416)	[info ]	  - VK_NV_present_metering
+21:59:39:133(0000417)	[info ]	  - VK_NV_push_constant_bank
+21:59:39:134(0000418)	[info ]	  - VK_NV_raw_access_chains
+21:59:39:134(0000419)	[info ]	  - VK_NV_ray_tracing
+21:59:39:134(0000420)	[info ]	  - VK_NV_ray_tracing_invocation_reorder
+21:59:39:134(0000421)	[info ]	  - VK_NV_representative_fragment_test
+21:59:39:134(0000422)	[info ]	  - VK_NV_sample_mask_override_coverage
+21:59:39:134(0000423)	[info ]	  - VK_NV_scissor_exclusive
+21:59:39:134(0000424)	[info ]	  - VK_NV_shader_atomic_float16_vector
+21:59:39:134(0000425)	[info ]	  - VK_NV_shader_image_footprint
+21:59:39:134(0000426)	[info ]	  - VK_NV_shader_sm_builtins
+21:59:39:134(0000427)	[info ]	  - VK_NV_shader_subgroup_partitioned
+21:59:39:134(0000428)	[info ]	  - VK_NV_shading_rate_image
+21:59:39:134(0000429)	[info ]	  - VK_NV_viewport_array2
+21:59:39:134(0000430)	[info ]	  - VK_NV_viewport_swizzle
+21:59:39:134(0000431)	[info ]	  - VK_NV_win32_keyed_mutex
+21:59:39:134(0000432)	[info ]	  - VK_NVX_binary_import
+21:59:39:134(0000433)	[info ]	  - VK_NVX_image_view_handle
+21:59:39:134(0000434)	[info ]	  - VK_NVX_multiview_per_view_attributes
+21:59:39:134(0000435)	[info ]	  - VK_AMD_buffer_marker
+21:59:39:134(0000436)	[info ]	  - VK_GOOGLE_hlsl_functionality1
+21:59:39:134(0000437)	[info ]	  - VK_GOOGLE_user_type
+21:59:39:134(0000438)	[info ]	  - # of layers: 2
+21:59:39:134(0000439)	[info ]	  - VK_LAYER_NV_optimus
+21:59:39:134(0000440)	[info ]	  - VK_LAYER_NV_present
+21:59:39:134(0000441)	[info ]	  - # of memory heaps: 3
+21:59:39:134(0000442)	[info ]	  - heap 1: 3935 MB
+21:59:39:134(0000443)	[info ]	  - heap 2: 8155 MB
+21:59:39:134(0000444)	[info ]	  - heap 3: 214 MB
+21:59:39:134(0000445)	[info ]	  - # of features: 151
+21:59:39:134(0000446)	[info ]	  - robustBufferAccess (VK 1.0):  YES
+21:59:39:134(0000447)	[info ]	  - fullDrawIndexUint32 (VK 1.0):  YES
+21:59:39:134(0000448)	[info ]	  - imageCubeArray (VK 1.0):  YES
+21:59:39:134(0000449)	[info ]	  - independentBlend (VK 1.0):  YES
+21:59:39:134(0000450)	[info ]	  - geometryShader (VK 1.0):  YES
+21:59:39:134(0000451)	[info ]	  - tessellationShader (VK 1.0):  YES
+21:59:39:134(0000452)	[info ]	  - sampleRateShading (VK 1.0):  YES
+21:59:39:134(0000453)	[info ]	  - dualSrcBlend (VK 1.0):  YES
+21:59:39:134(0000454)	[info ]	  - logicOp (VK 1.0):  YES
+21:59:39:134(0000455)	[info ]	  - multiDrawIndirect (VK 1.0):  YES
+21:59:39:134(0000456)	[info ]	  - drawIndirectFirstInstance (VK 1.0):  YES
+21:59:39:134(0000457)	[info ]	  - depthClamp (VK 1.0):  YES
+21:59:39:134(0000458)	[info ]	  - depthBiasClamp (VK 1.0):  YES
+21:59:39:134(0000459)	[info ]	  - fillModeNonSolid (VK 1.0):  YES
+21:59:39:134(0000460)	[info ]	  - depthBounds (VK 1.0):  YES
+21:59:39:134(0000461)	[info ]	  - wideLines (VK 1.0):  YES
+21:59:39:134(0000462)	[info ]	  - largePoints (VK 1.0):  YES
+21:59:39:134(0000463)	[info ]	  - alphaToOne (VK 1.0):  YES
+21:59:39:134(0000464)	[info ]	  - multiViewport (VK 1.0):  YES
+21:59:39:134(0000465)	[info ]	  - samplerAnisotropy (VK 1.0):  YES
+21:59:39:134(0000466)	[info ]	  - textureCompressionETC2 (VK 1.0):  NO
+21:59:39:134(0000467)	[info ]	  - textureCompressionASTC_LDR (VK 1.0):  NO
+21:59:39:134(0000468)	[info ]	  - textureCompressionBC (VK 1.0):  YES
+21:59:39:134(0000469)	[info ]	  - occlusionQueryPrecise (VK 1.0):  YES
+21:59:39:134(0000470)	[info ]	  - pipelineStatisticsQuery (VK 1.0):  YES
+21:59:39:134(0000471)	[info ]	  - vertexPipelineStoresAndAtomics (VK 1.0):  YES
+21:59:39:134(0000472)	[info ]	  - fragmentStoresAndAtomics (VK 1.0):  YES
+21:59:39:134(0000473)	[info ]	  - shaderTessellationAndGeometryPointSize (VK 1.0):  YES
+21:59:39:134(0000474)	[info ]	  - shaderImageGatherExtended (VK 1.0):  YES
+21:59:39:134(0000475)	[info ]	  - shaderStorageImageExtendedFormats (VK 1.0):  YES
+21:59:39:134(0000476)	[info ]	  - shaderStorageImageMultisample (VK 1.0):  YES
+21:59:39:134(0000477)	[info ]	  - shaderStorageImageReadWithoutFormat (VK 1.0):  YES
+21:59:39:134(0000478)	[info ]	  - shaderStorageImageWriteWithoutFormat (VK 1.0):  YES
+21:59:39:134(0000479)	[info ]	  - shaderUniformBufferArrayDynamicIndexing (VK 1.0):  YES
+21:59:39:134(0000480)	[info ]	  - shaderSampledImageArrayDynamicIndexing (VK 1.0):  YES
+21:59:39:134(0000481)	[info ]	  - shaderStorageBufferArrayDynamicIndexing (VK 1.0):  YES
+21:59:39:134(0000482)	[info ]	  - shaderStorageImageArrayDynamicIndexing (VK 1.0):  YES
+21:59:39:134(0000483)	[info ]	  - shaderClipDistance (VK 1.0):  YES
+21:59:39:134(0000484)	[info ]	  - shaderCullDistance (VK 1.0):  YES
+21:59:39:134(0000485)	[info ]	  - shaderFloat64 (VK 1.0):  YES
+21:59:39:134(0000486)	[info ]	  - shaderInt64 (VK 1.0):  YES
+21:59:39:134(0000487)	[info ]	  - shaderInt16 (VK 1.0):  YES
+21:59:39:134(0000488)	[info ]	  - shaderResourceResidency (VK 1.0):  YES
+21:59:39:134(0000489)	[info ]	  - shaderResourceMinLod (VK 1.0):  YES
+21:59:39:134(0000490)	[info ]	  - sparseBinding (VK 1.0):  YES
+21:59:39:134(0000491)	[info ]	  - sparseResidencyBuffer (VK 1.0):  YES
+21:59:39:134(0000492)	[info ]	  - sparseResidencyImage2D (VK 1.0):  YES
+21:59:39:134(0000493)	[info ]	  - sparseResidencyImage3D (VK 1.0):  YES
+21:59:39:134(0000494)	[info ]	  - sparseResidency2Samples (VK 1.0):  YES
+21:59:39:134(0000495)	[info ]	  - sparseResidency4Samples (VK 1.0):  YES
+21:59:39:134(0000496)	[info ]	  - sparseResidency8Samples (VK 1.0):  YES
+21:59:39:134(0000497)	[info ]	  - sparseResidency16Samples (VK 1.0):  YES
+21:59:39:134(0000498)	[info ]	  - sparseResidencyAliased (VK 1.0):  YES
+21:59:39:134(0000499)	[info ]	  - variableMultisampleRate (VK 1.0):  YES
+21:59:39:134(0000500)	[info ]	  - inheritedQueries (VK 1.0):  YES
+21:59:39:134(0000501)	[info ]	  - shaderDrawParameters (VK 1.1):  YES
+21:59:39:134(0000502)	[info ]	  - storageBuffer16BitAccess (VK 1.1):  YES
+21:59:39:134(0000503)	[info ]	  - uniformAndStorageBuffer16BitAccess (VK 1.1):  YES
+21:59:39:134(0000504)	[info ]	  - storagePushConstant16 (VK 1.1):  YES
+21:59:39:134(0000505)	[info ]	  - storageInputOutput16 (VK 1.1):  NO
+21:59:39:134(0000506)	[info ]	  - multiview (VK 1.1):  YES
+21:59:39:134(0000507)	[info ]	  - multiviewGeometryShader (VK 1.1):  YES
+21:59:39:134(0000508)	[info ]	  - multiviewTessellationShader (VK 1.1):  YES
+21:59:39:134(0000509)	[info ]	  - variablePointersStorageBuffer (VK 1.1):  YES
+21:59:39:134(0000510)	[info ]	  - variablePointers (VK 1.1):  YES
+21:59:39:134(0000511)	[info ]	  - protectedMemory (VK 1.1):  NO
+21:59:39:134(0000512)	[info ]	  - samplerYcbcrConversion (VK 1.1):  YES
+21:59:39:134(0000513)	[info ]	  - shaderDrawParameters (VK 1.1):  YES
+21:59:39:134(0000514)	[info ]	  - samplerMirrorClampToEdge (VK 1.2):  YES
+21:59:39:134(0000515)	[info ]	  - drawIndirectCount (VK 1.2):  YES
+21:59:39:134(0000516)	[info ]	  - storageBuffer8BitAccess (VK 1.2):  YES
+21:59:39:134(0000517)	[info ]	  - uniformAndStorageBuffer8BitAccess (VK 1.2):  YES
+21:59:39:134(0000518)	[info ]	  - storagePushConstant8 (VK 1.2):  YES
+21:59:39:134(0000519)	[info ]	  - shaderBufferInt64Atomics (VK 1.2):  YES
+21:59:39:134(0000520)	[info ]	  - shaderSharedInt64Atomics (VK 1.2):  YES
+21:59:39:134(0000521)	[info ]	  - shaderFloat16 (VK 1.2):  YES
+21:59:39:134(0000522)	[info ]	  - shaderInt8 (VK 1.2):  YES
+21:59:39:134(0000523)	[info ]	  - descriptorIndexing (VK 1.2):  YES
+21:59:39:134(0000524)	[info ]	  - shaderInputAttachmentArrayDynamicIndexing (VK 1.2):  YES
+21:59:39:134(0000525)	[info ]	  - shaderUniformTexelBufferArrayDynamicIndexing (VK 1.2):  YES
+21:59:39:134(0000526)	[info ]	  - shaderStorageTexelBufferArrayDynamicIndexing (VK 1.2):  YES
+21:59:39:134(0000527)	[info ]	  - shaderUniformBufferArrayNonUniformIndexing (VK 1.2):  YES
+21:59:39:134(0000528)	[info ]	  - shaderSampledImageArrayNonUniformIndexing (VK 1.2):  YES
+21:59:39:134(0000529)	[info ]	  - shaderStorageBufferArrayNonUniformIndexing (VK 1.2):  YES
+21:59:39:134(0000530)	[info ]	  - shaderStorageImageArrayNonUniformIndexing (VK 1.2):  YES
+21:59:39:135(0000531)	[info ]	  - shaderInputAttachmentArrayNonUniformIndexing (VK 1.2):  YES
+21:59:39:135(0000532)	[info ]	  - shaderUniformTexelBufferArrayNonUniformIndexing (VK 1.2):  YES
+21:59:39:135(0000533)	[info ]	  - shaderStorageTexelBufferArrayNonUniformIndexing (VK 1.2):  YES
+21:59:39:135(0000534)	[info ]	  - descriptorBindingUniformBufferUpdateAfterBind (VK 1.2):  YES
+21:59:39:135(0000535)	[info ]	  - descriptorBindingSampledImageUpdateAfterBind (VK 1.2):  YES
+21:59:39:135(0000536)	[info ]	  - descriptorBindingStorageImageUpdateAfterBind (VK 1.2):  YES
+21:59:39:135(0000537)	[info ]	  - descriptorBindingStorageBufferUpdateAfterBind (VK 1.2):  YES
+21:59:39:135(0000538)	[info ]	  - descriptorBindingUniformTexelBufferUpdateAfterBind (VK 1.2):  YES
+21:59:39:135(0000539)	[info ]	  - descriptorBindingStorageTexelBufferUpdateAfterBind (VK 1.2):  YES
+21:59:39:135(0000540)	[info ]	  - descriptorBindingUpdateUnusedWhilePending (VK 1.2):  YES
+21:59:39:135(0000541)	[info ]	  - descriptorBindingPartiallyBound (VK 1.2):  YES
+21:59:39:135(0000542)	[info ]	  - descriptorBindingVariableDescriptorCount (VK 1.2):  YES
+21:59:39:135(0000543)	[info ]	  - runtimeDescriptorArray (VK 1.2):  YES
+21:59:39:135(0000544)	[info ]	  - samplerFilterMinmax (VK 1.2):  YES
+21:59:39:135(0000545)	[info ]	  - scalarBlockLayout (VK 1.2):  YES
+21:59:39:135(0000546)	[info ]	  - imagelessFramebuffer (VK 1.2):  YES
+21:59:39:135(0000547)	[info ]	  - uniformBufferStandardLayout (VK 1.2):  YES
+21:59:39:135(0000548)	[info ]	  - shaderSubgroupExtendedTypes (VK 1.2):  YES
+21:59:39:135(0000549)	[info ]	  - separateDepthStencilLayouts (VK 1.2):  YES
+21:59:39:135(0000550)	[info ]	  - hostQueryReset (VK 1.2):  YES
+21:59:39:135(0000551)	[info ]	  - timelineSemaphore (VK 1.2):  YES
+21:59:39:135(0000552)	[info ]	  - bufferDeviceAddress (VK 1.2):  YES
+21:59:39:135(0000553)	[info ]	  - bufferDeviceAddressCaptureReplay (VK 1.2):  YES
+21:59:39:135(0000554)	[info ]	  - bufferDeviceAddressMultiDevice (VK 1.2):  YES
+21:59:39:135(0000555)	[info ]	  - vulkanMemoryModel (VK 1.2):  YES
+21:59:39:135(0000556)	[info ]	  - vulkanMemoryModelDeviceScope (VK 1.2):  YES
+21:59:39:135(0000557)	[info ]	  - vulkanMemoryModelAvailabilityVisibilityChains (VK 1.2):  YES
+21:59:39:135(0000558)	[info ]	  - shaderOutputViewportIndex (VK 1.2):  YES
+21:59:39:135(0000559)	[info ]	  - shaderOutputLayer (VK 1.2):  YES
+21:59:39:135(0000560)	[info ]	  - subgroupBroadcastDynamicId (VK 1.2):  YES
+21:59:39:135(0000561)	[info ]	  - robustImageAccess (VK 1.3):  YES
+21:59:39:135(0000562)	[info ]	  - inlineUniformBlock (VK 1.3):  YES
+21:59:39:135(0000563)	[info ]	  - descriptorBindingInlineUniformBlockUpdateAfterBind (VK 1.3):  YES
+21:59:39:135(0000564)	[info ]	  - pipelineCreationCacheControl (VK 1.3):  YES
+21:59:39:135(0000565)	[info ]	  - privateData (VK 1.3):  YES
+21:59:39:135(0000566)	[info ]	  - shaderDemoteToHelperInvocation (VK 1.3):  YES
+21:59:39:135(0000567)	[info ]	  - shaderTerminateInvocation (VK 1.3):  YES
+21:59:39:135(0000568)	[info ]	  - subgroupSizeControl (VK 1.3):  YES
+21:59:39:135(0000569)	[info ]	  - computeFullSubgroups (VK 1.3):  YES
+21:59:39:135(0000570)	[info ]	  - synchronization2 (VK 1.3):  YES
+21:59:39:135(0000571)	[info ]	  - textureCompressionASTC_HDR (VK 1.3):  NO
+21:59:39:135(0000572)	[info ]	  - shaderZeroInitializeWorkgroupMemory (VK 1.3):  YES
+21:59:39:135(0000573)	[info ]	  - dynamicRendering (VK 1.3):  YES
+21:59:39:135(0000574)	[info ]	  - shaderIntegerDotProduct (VK 1.3):  YES
+21:59:39:135(0000575)	[info ]	  - maintenance4 (VK 1.3):  YES
+21:59:39:135(0000576)	[info ]	  - globalPriorityQuery (VK 1.4):  YES
+21:59:39:135(0000577)	[info ]	  - shaderSubgroupRotate (VK 1.4):  YES
+21:59:39:135(0000578)	[info ]	  - shaderSubgroupRotateClustered (VK 1.4):  YES
+21:59:39:135(0000579)	[info ]	  - shaderFloatControls2 (VK 1.4):  YES
+21:59:39:135(0000580)	[info ]	  - shaderExpectAssume (VK 1.4):  YES
+21:59:39:135(0000581)	[info ]	  - rectangularLines (VK 1.4):  YES
+21:59:39:135(0000582)	[info ]	  - bresenhamLines (VK 1.4):  YES
+21:59:39:135(0000583)	[info ]	  - smoothLines (VK 1.4):  YES
+21:59:39:135(0000584)	[info ]	  - stippledRectangularLines (VK 1.4):  YES
+21:59:39:135(0000585)	[info ]	  - stippledBresenhamLines (VK 1.4):  YES
+21:59:39:135(0000586)	[info ]	  - stippledSmoothLines (VK 1.4):  YES
+21:59:39:135(0000587)	[info ]	  - vertexAttributeInstanceRateDivisor (VK 1.4):  YES
+21:59:39:135(0000588)	[info ]	  - vertexAttributeInstanceRateZeroDivisor (VK 1.4):  YES
+21:59:39:135(0000589)	[info ]	  - indexTypeUint8 (VK 1.4):  YES
+21:59:39:135(0000590)	[info ]	  - dynamicRenderingLocalRead (VK 1.4):  YES
+21:59:39:135(0000591)	[info ]	  - maintenance5 (VK 1.4):  YES
+21:59:39:135(0000592)	[info ]	  - maintenance6 (VK 1.4):  YES
+21:59:39:135(0000593)	[info ]	  - pipelineProtectedAccess (VK 1.4):  YES
+21:59:39:135(0000594)	[info ]	  - pipelineRobustness (VK 1.4):  YES
+21:59:39:135(0000595)	[info ]	  - hostImageCopy (VK 1.4):  YES
+21:59:39:135(0000596)	[info ]	  - pushDescriptor (VK 1.4):  YES
+21:59:39:135(0000597)	[info ]	  - # of hardware limits: 106
+21:59:39:135(0000598)	[info ]	    - maxImageDimension1D: 32768
+21:59:39:135(0000599)	[info ]	    - maxImageDimension2D: 32768
+21:59:39:135(0000600)	[info ]	    - maxImageDimension3D: 16384
+21:59:39:135(0000601)	[info ]	    - maxImageDimensionCube: 32768
+21:59:39:135(0000602)	[info ]	    - maxImageArrayLayers: 2048
+21:59:39:135(0000603)	[info ]	    - maxTexelBufferElements: 268435456
+21:59:39:135(0000604)	[info ]	    - maxUniformBufferRange: 65536
+21:59:39:135(0000605)	[info ]	    - maxStorageBufferRange: 4294967295
+21:59:39:135(0000606)	[info ]	    - maxPushConstantsSize: 256
+21:59:39:135(0000607)	[info ]	    - maxMemoryAllocationCount: 4294967295
+21:59:39:135(0000608)	[info ]	    - maxSamplerAllocationCount: 4000
+21:59:39:135(0000609)	[info ]	    - bufferImageGranularity: 1024
+21:59:39:135(0000610)	[info ]	    - sparseAddressSpaceSize: 1099511627776
+21:59:39:135(0000611)	[info ]	    - maxBoundDescriptorSets: 32
+21:59:39:135(0000612)	[info ]	    - maxPerStageDescriptorSamplers: 1048576
+21:59:39:135(0000613)	[info ]	    - maxSamplerAllocationCount: 1048576
+21:59:39:135(0000614)	[info ]	    - maxPerStageDescriptorStorageBuffers: 1048576
+21:59:39:135(0000615)	[info ]	    - maxPerStageDescriptorSampledImages: 1048576
+21:59:39:135(0000616)	[info ]	    - maxPerStageDescriptorStorageImages: 1048576
+21:59:39:135(0000617)	[info ]	    - maxPerStageDescriptorInputAttachments: 1048576
+21:59:39:135(0000618)	[info ]	    - maxPerStageResources: 4294967295
+21:59:39:135(0000619)	[info ]	    - maxDescriptorSetSamplers: 1048576
+21:59:39:135(0000620)	[info ]	    - maxDescriptorSetUniformBuffers: 1048576
+21:59:39:135(0000621)	[info ]	    - maxDescriptorSetUniformBuffersDynamic: 15
+21:59:39:135(0000622)	[info ]	    - maxDescriptorSetStorageBuffers: 1048576
+21:59:39:135(0000623)	[info ]	    - maxDescriptorSetStorageBuffersDynamic: 16
+21:59:39:135(0000624)	[info ]	    - maxDescriptorSetSampledImages: 1048576
+21:59:39:135(0000625)	[info ]	    - maxDescriptorSetStorageImages: 1048576
+21:59:39:135(0000626)	[info ]	    - maxDescriptorSetInputAttachments: 1048576
+21:59:39:135(0000627)	[info ]	    - maxVertexInputAttributes: 32
+21:59:39:135(0000628)	[info ]	    - maxVertexInputBindings: 32
+21:59:39:135(0000629)	[info ]	    - maxVertexInputAttributeOffset: 2047
+21:59:39:135(0000630)	[info ]	    - maxVertexInputBindingStride: 2048
+21:59:39:135(0000631)	[info ]	    - maxVertexOutputComponents: 128
+21:59:39:135(0000632)	[info ]	    - maxTessellationGenerationLevel: 64
+21:59:39:135(0000633)	[info ]	    - maxTessellationPatchSize: 32
+21:59:39:135(0000634)	[info ]	    - maxTessellationControlPerVertexInputComponents: 128
+21:59:39:135(0000635)	[info ]	    - maxTessellationControlPerVertexOutputComponents: 128
+21:59:39:136(0000636)	[info ]	    - maxTessellationControlPerPatchOutputComponents: 120
+21:59:39:136(0000637)	[info ]	    - maxTessellationControlTotalOutputComponents: 4216
+21:59:39:136(0000638)	[info ]	    - maxTessellationEvaluationInputComponents: 128
+21:59:39:136(0000639)	[info ]	    - maxTessellationEvaluationOutputComponents: 128
+21:59:39:136(0000640)	[info ]	    - maxGeometryShaderInvocations: 32
+21:59:39:136(0000641)	[info ]	    - maxGeometryInputComponents: 128
+21:59:39:136(0000642)	[info ]	    - maxGeometryOutputComponents: 128
+21:59:39:136(0000643)	[info ]	    - maxGeometryOutputVertices: 1024
+21:59:39:136(0000644)	[info ]	    - maxGeometryTotalOutputComponents: 1024
+21:59:39:136(0000645)	[info ]	    - maxFragmentInputComponents: 128
+21:59:39:136(0000646)	[info ]	    - maxFragmentOutputAttachments: 8
+21:59:39:136(0000647)	[info ]	    - maxFragmentDualSrcAttachments: 1
+21:59:39:136(0000648)	[info ]	    - maxFragmentCombinedOutputResources: 4294967295
+21:59:39:136(0000649)	[info ]	    - maxComputeSharedMemorySize: 49152
+21:59:39:136(0000650)	[info ]	    - maxComputeWorkGroupCount: 2147483647 x 65535 x 65535
+21:59:39:136(0000651)	[info ]	    - maxComputeWorkGroupInvocations: 1024
+21:59:39:136(0000652)	[info ]	    - maxComputeWorkGroupSize: 1024 x 1024 x 64
+21:59:39:136(0000653)	[info ]	    - subPixelPrecisionBits: 8
+21:59:39:136(0000654)	[info ]	    - subTexelPrecisionBits: 8
+21:59:39:136(0000655)	[info ]	    - mipmapPrecisionBits: 8
+21:59:39:136(0000656)	[info ]	    - maxDrawIndexedIndexValue: 4294967295
+21:59:39:136(0000657)	[info ]	    - maxDrawIndirectCount: 4294967295
+21:59:39:136(0000658)	[info ]	    - maxSamplerLodBias: 15.000000
+21:59:39:136(0000659)	[info ]	    - maxSamplerAnisotropy: 16.000000
+21:59:39:136(0000660)	[info ]	    - maxViewports: 16
+21:59:39:136(0000661)	[info ]	    - maxViewportDimensions: 32768 x 32768
+21:59:39:136(0000662)	[info ]	    - viewportBoundsRange: -65536.000000 x 65536.000000
+21:59:39:136(0000663)	[info ]	    - viewportSubPixelBits: 8
+21:59:39:136(0000664)	[info ]	    - minMemoryMapAlignment: 64
+21:59:39:136(0000665)	[info ]	    - minTexelBufferOffsetAlignment: 16
+21:59:39:136(0000666)	[info ]	    - minUniformBufferOffsetAlignment: 64
+21:59:39:136(0000667)	[info ]	    - minStorageBufferOffsetAlignment: 16
+21:59:39:136(0000668)	[info ]	    - minTexelOffset: -8
+21:59:39:136(0000669)	[info ]	    - maxTexelOffset: 7
+21:59:39:136(0000670)	[info ]	    - minTexelGatherOffset: -32
+21:59:39:136(0000671)	[info ]	    - maxTexelGatherOffset: 31
+21:59:39:136(0000672)	[info ]	    - minInterpolationOffset: -0.500000
+21:59:39:136(0000673)	[info ]	    - maxInterpolationOffset: 0.437500
+21:59:39:136(0000674)	[info ]	    - subPixelInterpolationOffsetBits: 4
+21:59:39:136(0000675)	[info ]	    - maxFramebufferWidth: 32768
+21:59:39:136(0000676)	[info ]	    - maxFramebufferHeight: 32768
+21:59:39:136(0000677)	[info ]	    - maxFramebufferLayers: 2048
+21:59:39:136(0000678)	[info ]	    - framebufferColorSampleCounts: 15
+21:59:39:136(0000679)	[info ]	    - framebufferDepthSampleCounts: 15
+21:59:39:136(0000680)	[info ]	    - framebufferStencilSampleCounts: 31
+21:59:39:136(0000681)	[info ]	    - framebufferNoAttachmentsSampleCounts: 31
+21:59:39:136(0000682)	[info ]	    - maxColorAttachments: 8
+21:59:39:136(0000683)	[info ]	    - sampledImageColorSampleCounts: 15
+21:59:39:136(0000684)	[info ]	    - sampledImageIntegerSampleCounts: 15
+21:59:39:136(0000685)	[info ]	    - sampledImageDepthSampleCounts: 15
+21:59:39:136(0000686)	[info ]	    - sampledImageStencilSampleCounts: 31
+21:59:39:136(0000687)	[info ]	    - storageImageSampleCounts: 15
+21:59:39:136(0000688)	[info ]	    - maxSampleMaskWords: 1
+21:59:39:136(0000689)	[info ]	    - timestampComputeAndGraphics: 1
+21:59:39:136(0000690)	[info ]	    - timestampPeriod: 1.000000
+21:59:39:136(0000691)	[info ]	    - maxClipDistances: 8
+21:59:39:136(0000692)	[info ]	    - maxCullDistances: 8
+21:59:39:136(0000693)	[info ]	    - maxCombinedClipAndCullDistances: 8
+21:59:39:136(0000694)	[info ]	    - discreteQueuePriorities: 2
+21:59:39:136(0000695)	[info ]	    - pointSizeRange: 1.000000 x 2047.937500
+21:59:39:136(0000696)	[info ]	    - lineWidthRange: 1.000000 x 64.000000
+21:59:39:136(0000697)	[info ]	    - pointSizeGranularity: 0.062500
+21:59:39:136(0000698)	[info ]	    - lineWidthGranularity: 0.062500
+21:59:39:136(0000699)	[info ]	    - strictLines: 1
+21:59:39:136(0000700)	[info ]	    - standardSampleLocations: 1
+21:59:39:136(0000701)	[info ]	    - optimalBufferCopyOffsetAlignment: 1
+21:59:39:136(0000702)	[info ]	    - optimalBufferCopyRowPitchAlignment: 1
+21:59:39:136(0000703)	[info ]	    - nonCoherentAtomSize: 64
+21:59:39:169(0000704)	[info ]	scripts INIT execution: OK.
+21:59:41:374(0000705)	[info ]	Scene statistics:
+21:59:41:374(0000706)	[info ]	- 119 frames rendered during 2.205 seconds
+21:59:41:374(0000707)	[info ]	- average framerate: 54.0 FPS
+21:59:41:733(0000708)	[info ]	Stopping GeeXLab Player...
+21:59:41:756(0000709)	[info ]	GraphX Core stopped ok.
+21:59:41:756(0000710)	[info ]	Exit from GeeXLab Player.

@@ -6,3 +6,8 @@ dist/
 *.pyc
 .external/furmark.zip
 .external/furmark/
+# But track these specific binaries
+!.external/mvolt/mvoltplus.exe
+!windows/FurMark.exe
+!windows/_fm2-gui.exe
+!linux/FurMark

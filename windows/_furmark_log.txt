@@ -1,0 +1,55 @@
+(10:12:28:163)	FurMark 2.10.2.0 (build: Oct 22 2025@12:39:49)
+(10:12:28:163)	(c)2007-2025 Geeks3D
+(10:12:28:163)	homepage: https://www.geeks3d.com/furmark/
+(10:12:28:163)	discord server : https://geeks3d.com/discord/
+(10:12:28:163)	FurMark (GeeXLab engine) initialization...
+(10:12:28:163)	command line: furmark.exe --demo furmark-gl --gpu-index 0 --width 1920 --height 1080 --msaa 1 --furmark-bfc 0 --furmark-bkg-img-id 0 
+(10:12:28:163)	FurMark home directory: D:\FurMark2_x64\
+(10:12:28:163)	[stb] STB image loader. Supported formats: *.JPEG, *.PNG, *.TGA, *.BMP, *.PSD, *.GIF, *.HDR, *.PIC
+(10:12:28:163)	[tinyexr] EXR image loader.
+(10:12:28:163)	[lib3ds] Lib3ds loader (core plugin).
+(10:12:28:163)	[ObjLoaderV1] OBJ 3D loader (core plugin).
+(10:12:28:163)	[ObjLoaderV2] OBJ loader based on Tiny OBJ Loader (core plugin).
+(10:12:28:163)	[STL] STL (StereoLithography) 3D loader (core plugin).
+(10:12:28:163)	[glTF] glTF 3D loader (core plugin).
+(10:12:28:163)	[SQLite3] SQLite3 version 3.50.4
+(10:12:28:163)	GraphX Core 0.60.1.0 (codename: Dirac) initialization ok.
+(10:12:28:163)	Windows version: Windows 11 build 26200
+(10:12:28:163)	HW platform type: PC
+(10:12:28:163)	SW platform type: Windows 64-bit
+(10:12:28:164)	[GpuMonitor] Operating system detected: Windows 11 build 26200
+(10:12:28:172)	[GpuMonitor] NV/R530+: physical GPU(s): 1 - logical GPU(s): 1
+(10:12:28:220)	[GpuMonitor] Num GPUs detected: 1
+(10:12:28:220)	[GpuMonitor] > GPU0
+(10:12:28:220)	[GpuMonitor]   - name: NVIDIA GeForce GTX 1650
+(10:12:28:220)	[GpuMonitor]   - PCI codes: 0x10DE-0x1F0A
+(10:12:28:220)	[GpuMonitor]   - Bus ID: 7
+(10:12:28:220)	[GpuMonitor]   - VBIOS: 90.06.5e.00.74
+(10:12:28:220)	[GpuMonitor]   - core temperature: 64 degC
+(10:12:28:220)	FurMark (GeeXLab engine) started ok.
+(10:12:28:220)	system DPI: 96
+(10:12:28:338)	3D window size: 1936 x 1119
+(10:12:28:357)	current DPI: xdpi(96), ydpi(96) - DPI scale: 1.0
+(10:12:28:554)	GL_RENDERER: NVIDIA GeForce GTX 1650/PCIe/SSE2
+(10:12:28:554)	GL_VENDOR: NVIDIA Corporation
+(10:12:28:554)	GL_VERSION: 3.2.0 NVIDIA 616.92
+(10:12:28:554)	GL_SHADING_LANGUAGE_VERSION: 1.50 NVIDIA via Cg compiler
+(10:12:28:554)	OpenGL version detected: 3.2
+(10:12:28:554)	OpenGL extensions: 433
+(10:12:28:674)	[ArtifactScanner] Artifact scanner for GPU stability checking.
+(10:13:42:778)	[ Demo Quick Stats ]
+(10:13:42:778)	- demo                 : FurMark (GL) (built-in: YES)
+(10:13:42:778)	- renderer             : NVIDIA GeForce GTX 1650/PCIe/SSE2
+(10:13:42:778)	- 3D API               : OpenGL 3.2.0 NVIDIA 616.92
+(10:13:42:778)	- resolution           : 1920x1061
+(10:13:42:778)	- frames               : 4097
+(10:13:42:779)	- duration             : 73669 ms
+(10:13:42:779)	- FPS (min/avg/max)    : 50 / 56 / 109
+(10:13:42:779)	- GPU 0: NVIDIA GeForce GTX 1650 [10DE-1F0A]
+(10:13:42:779)	  .max temperature: 77°C
+(10:13:42:779)	  .max usage: 99%
+(10:13:42:779)	  .max core clock: 1950 MHz
+(10:13:42:779)	  .min core clock: 1756 MHz
+(10:13:43:849)	FurMark (GeeXLab engine) is shutting down...
+(10:13:43:852)	GraphX Core stopped ok.
+(10:13:43:852)	FurMark (GeeXLab engine) shutdown ok.

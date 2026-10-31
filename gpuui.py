@@ -74,7 +74,9 @@ MVOLT_DIR = Path(__file__).resolve().parent / ".external" / "mvolt"
 
 # FurMark stress-test binary lives in <app folder>\.external\furmark\FurMark.exe
 FURMARK_DIR = Path(__file__).resolve().parent / ".external" / "furmark"
+_FURMARK_BASE = Path(__file__).resolve().parent
 FURMARK_INSTALL_DIRS = [
+    _FURMARK_BASE / "windows" if os.name == "nt" else _FURMARK_BASE / "linux",
     FURMARK_DIR,
     Path("D:/FurMark2_x64"),
     Path("C:/FurMark2_x64"),

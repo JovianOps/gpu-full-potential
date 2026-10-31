@@ -74,6 +74,11 @@ MVOLT_DIR = Path(__file__).resolve().parent / ".external" / "mvolt"
 
 # FurMark stress-test binary lives in <app folder>\.external\furmark\FurMark.exe
 FURMARK_DIR = Path(__file__).resolve().parent / ".external" / "furmark"
+FURMARK_INSTALL_DIRS = [
+    FURMARK_DIR,
+    Path("D:/FurMark2_x64"),
+    Path("C:/FurMark2_x64"),
+]
 
 
 def detect_mvolt(path: Path = MVOLT_DIR) -> bool:
@@ -696,15 +701,16 @@ def mvoltplus_available() -> bool:
 
 
 def find_furmark() -> str | None:
-    """Find FurMark binary: check PATH first, then the bundled .external/furmark dir."""
+    """Find FurMark binary: check PATH, then known install dirs (.external/furmark, D:\\FurMark2_x64)."""
     for name in ("FurMark", "furmark"):
         path = shutil.which(name)
         if path:
             return path
-    for name in ("FurMark.exe", "FurMark2.exe", "FurMark", "FurMark2"):
-        candidate = FURMARK_DIR / name
-        if candidate.is_file():
-            return str(candidate)
+    for install_dir in FURMARK_INSTALL_DIRS:
+        for name in ("FurMark.exe", "furmark.exe", "FurMark2.exe", "FurMark", "FurMark2"):
+            candidate = install_dir / name
+            if candidate.is_file():
+                return str(candidate)
     return None
 
 
@@ -713,8 +719,9 @@ def furmark_available() -> bool:
 
 
 def furmark_stress(duration_ms: int = 30000) -> subprocess.Popen | None:
-    """Launch FurMark in headless benchmark mode for `duration_ms` milliseconds.
+    """Launch FurMark 2 in headless benchmark mode for `duration_ms` milliseconds.
 
+    Uses FurMark 2 CLI: --benchmark --no-score-box --duration-ms <ms>
     Returns the Popen handle (caller must terminate it) or None if FurMark
     is not available.
     """
@@ -724,8 +731,9 @@ def furmark_stress(duration_ms: int = 30000) -> subprocess.Popen | None:
         return None
     try:
         proc = subprocess.Popen(
-            [exe, "--benchmark", "--width", "640", "--height", "480",
-             "--msaa", "1", "--no_gui", "--max_time", str(duration_ms)],
+            [exe, "--benchmark", "--no-score-box",
+             "--width", "640", "--height", "480",
+             "--msaa", "1", "--duration-ms", str(duration_ms)],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
         return proc

@@ -10,9 +10,9 @@ import gpuui
 # --- FurMark path detection --- #
 def test_find_furmark_returns_none_when_not_installed():
     """When FurMark is neither on PATH nor in .external/furmark/, find_furmark returns None."""
-    fake_dir = Path("/nonexistent/furmark")
+    fake_dirs = [Path("/nonexistent/furmark")]
     with (
-        mock.patch.object(gpuui, "FURMARK_DIR", fake_dir),
+        mock.patch.object(gpuui, "FURMARK_INSTALL_DIRS", fake_dirs),
         mock.patch("gpuui.shutil.which", return_value=None),
     ):
         assert gpuui.find_furmark() is None

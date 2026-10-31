@@ -1,5 +1,5 @@
 """Tests for profile save/load and GPU detection fallback logic."""
-import json, os, sys, tempfile
+import sys
 from pathlib import Path
 from unittest import mock
 

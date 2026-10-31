@@ -20,3 +20,12 @@ dev = [
 
 [project.scripts]
 gpuunlock = "gpuui:main"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+ignore = ["BLE001", "PLW1510", "RUF012", "PLR2004"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

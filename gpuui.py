@@ -6,22 +6,22 @@ No display value is hardcoded: anything not yet supplied is shown as '--'.
 """
 from __future__ import annotations
 
-import ctypes
-import logging
 import argparse
+import ctypes
 import json
+import logging
 import os
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from string import Template
-from typing import Callable
 
-from PySide6.QtCore import QEvent, QPoint, QPointF, QSize, Qt, QTimer, Signal
-from PySide6.QtGui import QAction, QColor, QFont, QIcon, QPixmap, QPen, QRegion
 from PySide6.QtCharts import QChart, QLineSeries, QValueAxis
+from PySide6.QtCore import QEvent, QPoint, QPointF, QSize, Qt, QTimer, Signal
+from PySide6.QtGui import QAction, QColor, QIcon, QPen, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QButtonGroup,
@@ -809,7 +809,7 @@ def make_label(text: str, object_name: str) -> QLabel:
     return label
 
 
-def fmt(value: int | float | None, template: str) -> str:
+def fmt(value: float | None, template: str) -> str:
     """Format value with template (e.g. '{} W'), or '--' when value is None."""
     if value is None:
         return MISSING
@@ -830,7 +830,7 @@ def temp_color(temp_c: float | None) -> str:
     return RED
 
 
-def delta_html(delta: int | float | None) -> str:
+def delta_html(delta: float | None) -> str:
     """Render a delta as colored HTML; returns '' when delta is None."""
     if delta is None:
         return ""
@@ -1321,17 +1321,17 @@ class BenchPage(QWidget):
         layout.addWidget(card)
         layout.addStretch(1)
 
-    def _set_row(self, index: int, text: str, delta: int | float | None = None) -> None:
+    def _set_row(self, index: int, text: str, delta: float | None = None) -> None:
         suffix = delta_html(delta)
         self._value_labels[index].setText(f"{text}&nbsp;&nbsp;{suffix}" if suffix else text)
 
-    def set_clocks(self, mhz: int | float | None, delta: int | float | None = None) -> None:
+    def set_clocks(self, mhz: float | None, delta: float | None = None) -> None:
         self._set_row(0, fmt(mhz, "{:g} MHz"), delta)
 
-    def set_temp(self, celsius: int | float | None, delta: int | float | None = None) -> None:
+    def set_temp(self, celsius: float | None, delta: float | None = None) -> None:
         self._set_row(1, fmt(celsius, "{:g}°C"), delta)
 
-    def set_power(self, watts: int | float | None, delta: int | float | None = None) -> None:
+    def set_power(self, watts: float | None, delta: float | None = None) -> None:
         self._set_row(2, fmt(watts, "{:g} W"), delta)
 
     def set_running(self, running: bool) -> None:

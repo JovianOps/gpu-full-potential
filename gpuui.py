@@ -1716,6 +1716,8 @@ class MainWindow(QMainWindow):
         self.auto_page.clear_log()
         self.auto_page.set_result(MISSING)
         self.auto_page.append_log("Auto Tune: baseline measurement")
+        self.auto_page.append_log("  Run a GPU workload (game/render) during tuning")
+        self.auto_page.append_log("  No workload = temps stay at idle floor, readings invalid")
 
         limits = query_power_limits()
         start_w = limits[0] if limits and limits[0] else 50
@@ -1735,7 +1737,13 @@ class MainWindow(QMainWindow):
             return
         avg_temp = int(sum(s["temp"] for s in samples) / len(samples))
         avg_clk = int(sum(s["sm_clk"] for s in samples) / len(samples))
-        self.auto_page.append_log(f"  {step_w}W → {avg_temp}°C, {avg_clk} MHz")
+        avg_util = int(sum(s["util"] for s in samples) / len(samples))
+        if avg_util < 30:
+            self.auto_page.append_log(f"  {step_w}W → util {avg_util}% — no workload running")
+            self.auto_page.append_log("  Start a game/benchmark, then re-run auto-tune")
+            self._finish_auto_tune()
+            return
+        self.auto_page.append_log(f"  {step_w}W → {avg_temp}°C, {avg_clk} MHz, util {avg_util}%")
         if avg_temp > 85:
             self.auto_page.append_log(f"  {step_w}W → {avg_temp}°C thermal limit")
             self._finish_auto_tune()
@@ -1763,7 +1771,10 @@ class MainWindow(QMainWindow):
 
     def _on_bench_run(self) -> None:
         self.bench_page.set_running(True)
-        self.set_status("Idle baseline (5s)...")
+        self.bench_page.set_clocks(0, 0)
+        self.bench_page.set_temp(0, 0)
+        self.bench_page.set_power(0, 0)
+        self.set_status("Idle baseline (5s)... start a GPU workload")
         idle_samples = run_dmon(duration_s=5)
         if not idle_samples:
             self.set_status("dmon failed — no GPU?")
@@ -1777,6 +1788,10 @@ class MainWindow(QMainWindow):
         stress_samples = run_dmon(duration_s=30)
         if not stress_samples:
             self.set_status("dmon failed during stress")
+            self.bench_page.set_running(False)
+            return
+        if sum(s["util"] for s in stress_samples) / len(stress_samples) < 30:
+            self.set_status("⚠️ No GPU workload detected — run a game/benchmark during stress")
             self.bench_page.set_running(False)
             return
 

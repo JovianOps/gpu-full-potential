@@ -72,6 +72,9 @@ PROFILES_DIR = Path(os.environ.get("APPDATA", str(Path.home() / ".local/share"))
 # mVolt+ lives in <app folder>\.external\mvolt (e.g. C:\Users\RDC\Desktop\GPUUnlock\.external\mvolt)
 MVOLT_DIR = Path(__file__).resolve().parent / ".external" / "mvolt"
 
+# FurMark stress-test binary lives in <app folder>\.external\furmark\FurMark.exe
+FURMARK_DIR = Path(__file__).resolve().parent / ".external" / "furmark"
+
 
 def detect_mvolt(path: Path = MVOLT_DIR) -> bool:
     try:
@@ -452,11 +455,22 @@ def query_power_limits() -> tuple[int | None, float | None]:
     return (pl, pm)
 
 
-def run_dmon(duration_s: int) -> list[dict]:
-    """Run nvidia-smi dmon for `duration_s` seconds, return parsed samples."""
+def run_dmon(duration_s: int, stress_ms: int = 0) -> list[dict]:
+    """Run nvidia-smi dmon for `duration_s` seconds, return parsed samples.
+
+    If ``stress_ms`` > 0 and FurMark is available, launch FurMark for that many
+    milliseconds before sampling — this provides a real GPU workload so that
+    utilization, clocks, and power readings reflect actual stress, not idle floor.
+    """
     smi = find_nvidia_smi()
     if not smi:
         return []
+    stress_proc = None
+    if stress_ms > 0 and furmark_available():
+        stress_proc = furmark_stress(duration_ms=stress_ms)
+        if stress_proc:
+            import time
+            time.sleep(min(2.0, stress_ms / 1000.0))  # let GPUs ramp up
     try:
         proc = subprocess.Popen(
             [smi, "dmon", "-s", "um", "-d", "1"],
@@ -480,9 +494,18 @@ def run_dmon(duration_s: int) -> list[dict]:
                 })
         proc.terminate()
         proc.wait(timeout=3)
+        if stress_proc:
+            stress_proc.terminate()
+            stress_proc.wait(timeout=3)
         return samples
     except Exception as exc:
         log.error("dmon failed: %s", exc)
+        if stress_proc:
+            stress_proc.terminate()
+            try:
+                stress_proc.wait(timeout=3)
+            except Exception:
+                log.debug("FurMark cleanup timeout — non-fatal")
         return []
 
 
@@ -670,6 +693,78 @@ def find_mvoltplus() -> str | None:
 
 def mvoltplus_available() -> bool:
     return find_mvoltplus() is not None
+
+
+def find_furmark() -> str | None:
+    """Find FurMark binary: check PATH first, then the bundled .external/furmark dir."""
+    for name in ("FurMark", "furmark"):
+        path = shutil.which(name)
+        if path:
+            return path
+    for name in ("FurMark.exe", "FurMark2.exe", "FurMark", "FurMark2"):
+        candidate = FURMARK_DIR / name
+        if candidate.is_file():
+            return str(candidate)
+    return None
+
+
+def furmark_available() -> bool:
+    return find_furmark() is not None
+
+
+def furmark_stress(duration_ms: int = 30000) -> subprocess.Popen | None:
+    """Launch FurMark in headless benchmark mode for `duration_ms` milliseconds.
+
+    Returns the Popen handle (caller must terminate it) or None if FurMark
+    is not available.
+    """
+    exe = find_furmark()
+    if not exe:
+        log.warning("FurMark not found — stress test skipped")
+        return None
+    try:
+        proc = subprocess.Popen(
+            [exe, "--benchmark", "--width", "640", "--height", "480",
+             "--msaa", "1", "--no_gui", "--max_time", str(duration_ms)],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+        return proc
+    except Exception as exc:
+        log.error("Failed to launch FurMark: %s", exc)
+        return None
+
+
+def download_furmark(dest_dir: Path | None = None) -> str | None:
+    """Download FurMark 2 win64 portable ZIP into .external/furmark/ if not present.
+
+    Returns the path to FurMark.exe on success, None on failure.
+    """
+    if dest_dir is None:
+        dest_dir = FURMARK_DIR
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    exe_path = dest_dir / "FurMark.exe"
+    if exe_path.is_file():
+        return str(exe_path)
+    import urllib.request
+    zip_url = "https://www.geeks3d.com/dl/get/830"  # FurMark 2 win64 ZIP
+    zip_path = dest_dir / "furmark.zip"
+    try:
+        urllib.request.urlretrieve(zip_url, str(zip_path))
+    except Exception as exc:
+        log.error("FurMark download failed: %s", exc)
+        return None
+    import zipfile
+    try:
+        with zipfile.ZipFile(zip_path) as zf:
+            zf.extractall(dest_dir)
+        zip_path.unlink(missing_ok=True)
+        # Find the actual FurMark.exe in extracted files
+        for candidate in dest_dir.rglob("FurMark.exe"):
+            return str(candidate)
+        return None
+    except Exception as exc:
+        log.error("FurMark extract failed: %s", exc)
+        return None
 
 
 def mvoltplus_query_status(gpu_id: str | None = None) -> dict | None:
@@ -1716,8 +1811,16 @@ class MainWindow(QMainWindow):
         self.auto_page.clear_log()
         self.auto_page.set_result(MISSING)
         self.auto_page.append_log("Auto Tune: baseline measurement")
-        self.auto_page.append_log("  Run a GPU workload (game/render) during tuning")
-        self.auto_page.append_log("  No workload = temps stay at idle floor, readings invalid")
+        if not furmark_available():
+            self.auto_page.append_log("  Downloading FurMark stress test (32MB)...")
+            if download_furmark():
+                self.auto_page.append_log("  FurMark downloaded — will auto-launch for each power step")
+            else:
+                self.auto_page.append_log("  ⚠️ FurMark download failed — install manually from geks3d.com/furmark")
+                self._finish_auto_tune()
+                return
+        else:
+            self.auto_page.append_log("  FurMark will auto-launch for each power step")
 
         limits = query_power_limits()
         start_w = limits[0] if limits and limits[0] else 50
@@ -1730,7 +1833,7 @@ class MainWindow(QMainWindow):
             self._finish_auto_tune()
             return
         self.auto_page.append_log(f"  Testing {step_w}W...")
-        samples = run_dmon(duration_s=5)
+        samples = run_dmon(duration_s=5, stress_ms=5000)  # FurMark stressed sampling
         if not samples:
             self.auto_page.append_log(f"  {step_w}W → dmon failed")
             self._finish_auto_tune()
@@ -1739,8 +1842,8 @@ class MainWindow(QMainWindow):
         avg_clk = int(sum(s["sm_clk"] for s in samples) / len(samples))
         avg_util = int(sum(s["util"] for s in samples) / len(samples))
         if avg_util < 30:
-            self.auto_page.append_log(f"  {step_w}W → util {avg_util}% — no workload running")
-            self.auto_page.append_log("  Start a game/benchmark, then re-run auto-tune")
+            self.auto_page.append_log(f"  {step_w}W → util {avg_util}% — FurMark failed, no real load")
+            self.auto_page.append_log("  Check FurMark path in .external/furmark/")
             self._finish_auto_tune()
             return
         self.auto_page.append_log(f"  {step_w}W → {avg_temp}°C, {avg_clk} MHz, util {avg_util}%")
@@ -1771,10 +1874,18 @@ class MainWindow(QMainWindow):
 
     def _on_bench_run(self) -> None:
         self.bench_page.set_running(True)
+        if not furmark_available():
+            self.set_status("Downloading FurMark stress test (32MB)...")
+            if download_furmark():
+                self.set_status("FurMark downloaded — starting benchmark...")
+            else:
+                self.set_status("⚠️ FurMark download failed — install manually from geks3d.com/furmark")
+                self.bench_page.set_running(False)
+                return
         self.bench_page.set_clocks(0, 0)
         self.bench_page.set_temp(0, 0)
         self.bench_page.set_power(0, 0)
-        self.set_status("Idle baseline (5s)... start a GPU workload")
+        self.set_status("Idle baseline (5s)...")
         idle_samples = run_dmon(duration_s=5)
         if not idle_samples:
             self.set_status("dmon failed — no GPU?")
@@ -1784,14 +1895,14 @@ class MainWindow(QMainWindow):
         idle_temp = sum(s["temp"] for s in idle_samples) / len(idle_samples)
         idle_power = sum(s["power"] for s in idle_samples) / len(idle_samples)
 
-        self.set_status("Stress (30s)...")
-        stress_samples = run_dmon(duration_s=30)
+        self.set_status("Stress (30s) — FurMark...")
+        stress_samples = run_dmon(duration_s=30, stress_ms=30000)
         if not stress_samples:
             self.set_status("dmon failed during stress")
             self.bench_page.set_running(False)
             return
         if sum(s["util"] for s in stress_samples) / len(stress_samples) < 30:
-            self.set_status("⚠️ No GPU workload detected — run a game/benchmark during stress")
+            self.set_status("⚠️ FurMark stress produced no real load — check .external\\furmark\\")
             self.bench_page.set_running(False)
             return
 

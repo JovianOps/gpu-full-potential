@@ -25,7 +25,7 @@ gpuunlock = "gpuui:main"
 line-length = 100
 
 [tool.ruff.lint]
-ignore = ["BLE001", "PLW1510", "RUF012", "PLR2004"]
+ignore = ["BLE001", "PLW1510", "RUF012", "PLR2004", "SIM117"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

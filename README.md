@@ -18,7 +18,14 @@ Then run the app:
 python gpuui.py
 ```
 
-Double-click `START_GUI.bat` or run `dist/GPUUnlock.exe` directly.
+Double-click `GPUUnlock.exe` directly — no `START_GUI.bat` needed.
+
+### Auto Tune & Benchmark
+Auto Tune and the 30s stress benchmark require a real GPU workload. If FurMark
+is not installed, the app auto-downloads FurMark 2 (portable, ~32MB from
+geeks3d.com) into `.external/furmark/` on first use. Alternatively, install
+FurMark manually from https://geeks3d.com/furmark/ and the app will find it on
+PATH.
 
 ## Features
 - Live GPU metrics (util, temp, power, clocks)

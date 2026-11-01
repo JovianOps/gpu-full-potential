@@ -49,22 +49,22 @@ log = logging.getLogger("gpu_unlock")
 # --------------------------------------------------------------------------- #
 # Constants
 # --------------------------------------------------------------------------- #
-BG = "#0d0d0d"
-CARD = "#1a1a1a"
-ACCENT = "#00ff88"
-GRAY = "#8a8a8a"
-TEXT = "#e6e6e6"
-TRACK = "#2e2e2e"
-YELLOW = "#ffd23f"
-RED = "#ff4d4d"
-WARN = "#d9a93a"
+BG = "#0b121a"
+CARD = "#14212d"
+ACCENT = "#35d6c8"
+GRAY = "#91a8bb"
+TEXT = "#e8f1fa"
+TRACK = "#30485c"
+YELLOW = "#f2c66d"
+RED = "#ff6b72"
+WARN = "#e8bd69"
 MISSING = "--"
 TEMP_WARN_C = 70  # temp value turns yellow at/above this
 TEMP_HOT_C = 80  # temp value turns red at/above this
 TEMP_ALERT_C = 85  # tray notification fires above this
 TEMP_LOCK_MAX_C = 75  # skip Max Boost lock above this (risk of thermal throttle)
 
-WINDOW_W, WINDOW_H = 600, 400
+WINDOW_W, WINDOW_H = 1140, 740
 OVERLAY_W, OVERLAY_H = 160, 90
 StatusFn = Callable[[str], None]
 PROFILES_DIR = Path(os.environ.get("APPDATA", str(Path.home() / ".local/share"))) / "GPUUnlock" / "profiles"
@@ -100,15 +100,20 @@ QMainWindow, QWidget#root { background: $BG; }
 QWidget { font-family: "Segoe UI"; font-size: 12px; color: $TEXT; }
 QLabel { background: transparent; }
 
-/* Top accent bar — 2px green line at window top */
-QWidget#titleBar { background: $ACCENT; }
+/* App header */
+QWidget#titleBar { background: #101c28; border-bottom: 1px solid #263c4e; }
 
-QLabel#appName { color: $ACCENT; font-size: 16px; font-weight: 700; }
-QLabel#gpuName { color: $GRAY; font-size: 11px; }
+QLabel#appName { color: $TEXT; font-size: 15px; font-weight: 700; }
+QLabel#gpuName { color: #c4d7e8; font-size: 11px; }
+QWidget#telemetryBar { background: #0e1822; border-bottom: 1px solid #263c4e; }
+QLabel#metricCaption { color: $GRAY; font-size: 10px; }
+QLabel#metricValue { color: $TEXT; font-size: 17px; font-family: "Consolas", monospace; }
 QLabel#statusBar {
-    background: #111111; color: #666666; font-size: 11px;
+    background: #0e1822; color: $GRAY; font-size: 11px;
     border: none; spacing: 0px; text-align: center;
 }
+QLabel#credit { color: #7892a7; font-size: 10px; }
+QLabel#credit a { color: #72b8c3; }
 
 /* Tab bar — borderless, accent on checked */
 QPushButton#tab {
@@ -119,7 +124,7 @@ QPushButton#tab:hover { color: #cfcfcf; }
 QPushButton#tab:checked { color: #ffffff; border-bottom: 2px solid $ACCENT; }
 
 /* Cards — dark bg, 8px radius, no border */
-QFrame#card { background: $CARD; border-radius: 8px; border: none; }
+QFrame#card { background: $CARD; border-radius: 5px; border: 1px solid #2c4357; }
 QLabel#cardLabel { color: $GRAY; font-size: 11px; }
 QLabel#cardValue {
     color: $ACCENT; font-family: "Consolas", "Courier New", monospace;
@@ -148,27 +153,20 @@ QSlider::handle:horizontal {
 QSlider::sub-page:horizontal:disabled { background: #3a3a3a; }
 QSlider::handle:horizontal:disabled { background: #4a4a4a; }
 
-/* Buttons — no border, 6px radius, dark bg, green on hover */
+/* Buttons — dark panels with teal hover accents */
 QPushButton#primary {
-    background: $CARD; color: #cfcfcf; border: none; border-radius: 6px;
+    background: #1b2c3b; color: #d7e6f3; border: 1px solid #314a60; border-radius: 4px;
     font-size: 12px; font-weight: 700; padding: 0 16px;
 }
-QPushButton#primary:hover { background: $ACCENT; color: #000000; }
-QPushButton#primary:pressed { background: #00cc6e; color: #000000; }
-QPushButton#primary:disabled { background: #1f3a2d; color: #4d6b5c; }
+QPushButton#primary:hover { background: #254457; color: #ffffff; border-color: $ACCENT; }
+QPushButton#primary:pressed { background: #1e6870; color: #ffffff; }
+QPushButton#primary:disabled { background: #18232c; color: #65798a; }
 QPushButton#secondary {
-    background: $CARD; color: $GRAY; border: none; border-radius: 6px;
+    background: #101b26; color: $GRAY; border: 1px solid #2a4154; border-radius: 4px;
     font-size: 12px; font-weight: 600; padding: 0 16px;
 }
-QPushButton#secondary:hover { background: $ACCENT; color: #000000; }
-QPushButton#secondary:pressed { background: #00cc6e; color: #000000; }
-
-/* Close button — red on hover */
-QPushButton#closeBtn {
-    background: transparent; color: $GRAY; border: none;
-    font-size: 14px; font-weight: 700; padding: 0 8px;
-}
-QPushButton#closeBtn:hover { background: $RED; color: #ffffff; border-radius: 4px; }
+QPushButton#secondary:hover { background: #1e3547; color: $TEXT; border-color: $ACCENT; }
+QPushButton#secondary:pressed { background: #1e6870; color: #ffffff; }
 
 QTextEdit#log {
     background: $CARD; color: #cfcfcf; border: none; border-radius: 8px; padding: 8px;
@@ -1113,7 +1111,7 @@ class StatCard(QFrame):
         super().__init__(parent)
         self.setObjectName("card")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        self.setFixedSize(180, 90)
+        self.setMinimumSize(180, 90)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(12, 8, 12, 8)
@@ -1149,10 +1147,13 @@ class DashboardPage(QWidget):
         layout.setSpacing(0)
 
         grid_host = QWidget()
-        grid_host.setFixedSize(3 * 180 + 2 * 8, 2 * 90 + 8)
         grid = QGridLayout(grid_host)
         grid.setContentsMargins(0, 0, 0, 0)
         grid.setSpacing(8)
+        for column in range(3):
+            grid.setColumnStretch(column, 1)
+        for row in range(2):
+            grid.setRowStretch(row, 1)
 
         self.util_card = StatCard("🎮", "Utilization", "GPU load")
         self.temp_card = StatCard("🔥", "Temp")
@@ -1172,8 +1173,7 @@ class DashboardPage(QWidget):
         for index, card in enumerate(cards):
             grid.addWidget(card, index // 3, index % 3)
 
-        layout.addWidget(grid_host, 0, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
-        layout.addStretch(1)
+        layout.addWidget(grid_host, 1)
 
         # Show all '--' until real data arrives
         self.update_stats(GpuStats())
@@ -1569,11 +1569,8 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("GPU Unlock")
         self.setWindowIcon(make_tray_icon())
-        self.setWindowFlags(
-            Qt.WindowType.FramelessWindowHint
-            | Qt.WindowType.WindowStaysOnTopHint
-        )
-        self.setFixedSize(WINDOW_W, WINDOW_H)
+        self.resize(WINDOW_W, WINDOW_H)
+        self.setMinimumSize(960, 640)
 
         root = QWidget()
         root.setObjectName("root")
@@ -1583,11 +1580,23 @@ class MainWindow(QMainWindow):
         root_layout.setSpacing(0)
 
         root_layout.addWidget(self._build_top_bar())
+        root_layout.addWidget(self._build_telemetry_bar())
 
         self.stack = QStackedWidget()
+        footer = QWidget()
+        footer.setObjectName("telemetryBar")
+        footer.setFixedHeight(30)
+        footer_layout = QHBoxLayout(footer)
+        footer_layout.setContentsMargins(16, 0, 16, 0)
         self.status_lbl = make_label("", "statusBar")
-        self.status_lbl.setFixedHeight(24)
-        self.status_lbl.setContentsMargins(16, 0, 16, 0)
+        self.status_lbl.setContentsMargins(0, 0, 0, 0)
+        footer_layout.addWidget(self.status_lbl, 1)
+        self.mvolt_credit = make_label(
+            '<a href="https://github.com/b00nz/mVolt">UI style inspired by mVolt+ by b00nz</a>',
+            "credit",
+        )
+        self.mvolt_credit.setOpenExternalLinks(True)
+        footer_layout.addWidget(self.mvolt_credit)
 
         self.dashboard_page = DashboardPage()
         self.tune_page = TunePage()
@@ -1618,7 +1627,7 @@ class MainWindow(QMainWindow):
         self.profiles_page.autorun_toggled.connect(self._on_autorun_toggled)
 
         root_layout.addWidget(self.stack, 1)
-        root_layout.addWidget(self.status_lbl)
+        root_layout.addWidget(footer)
 
         self._detect_gpu()
         self._build_tray()
@@ -1632,7 +1641,7 @@ class MainWindow(QMainWindow):
     def _build_top_bar(self) -> QWidget:
         bar = QWidget()
         bar.setObjectName("titleBar")
-        bar.setFixedHeight(32)
+        bar.setFixedHeight(40)
         layout = QHBoxLayout(bar)
         layout.setContentsMargins(16, 0, 16, 0)
         layout.setSpacing(8)
@@ -1646,19 +1655,39 @@ class MainWindow(QMainWindow):
         self.gpu_name_lbl = make_label(MISSING, "gpuName")
         layout.addWidget(self.gpu_name_lbl)
 
-        # Close button
-        close_btn = QPushButton("×")
-        close_btn.setObjectName("closeBtn")
-        close_btn.setFixedSize(24, 24)
-        close_btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        close_btn.clicked.connect(self._on_close_clicked)
-        layout.addWidget(close_btn)
+        return bar
 
+    def _build_telemetry_bar(self) -> QWidget:
+        bar = QWidget()
+        bar.setObjectName("telemetryBar")
+        bar.setFixedHeight(66)
+        layout = QHBoxLayout(bar)
+        layout.setContentsMargins(22, 8, 22, 8)
+        layout.setSpacing(0)
+        self.util_header_value = make_label(MISSING, "metricValue")
+        self.temp_header_value = make_label(MISSING, "metricValue")
+        self.power_header_value = make_label(MISSING, "metricValue")
+        self.clock_header_value = make_label(MISSING, "metricValue")
+        self.memory_header_value = make_label(MISSING, "metricValue")
+        for caption, value in (
+            ("GPU", self.util_header_value),
+            ("TEMPERATURE", self.temp_header_value),
+            ("POWER", self.power_header_value),
+            ("CORE CLOCK", self.clock_header_value),
+            ("MEMORY CLOCK", self.memory_header_value),
+        ):
+            cell = QWidget()
+            cell_layout = QVBoxLayout(cell)
+            cell_layout.setContentsMargins(0, 0, 0, 0)
+            cell_layout.setSpacing(2)
+            cell_layout.addWidget(make_label(caption, "metricCaption"))
+            cell_layout.addWidget(value)
+            layout.addWidget(cell, 1)
         return bar
 
     def _build_tab_bar(self) -> QWidget:
         bar = QWidget()
-        bar.setFixedHeight(34)
+        bar.setFixedHeight(40)
         layout = QHBoxLayout(bar)
         layout.setContentsMargins(16, 0, 16, 0)
         layout.setSpacing(0)
@@ -1669,7 +1698,7 @@ class MainWindow(QMainWindow):
             btn = QPushButton(title)
             btn.setObjectName("tab")
             btn.setCheckable(True)
-            btn.setFixedHeight(32)
+            btn.setFixedHeight(38)
             btn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.tab_group.addButton(btn, index)
             layout.addWidget(btn, 1)
@@ -1735,6 +1764,12 @@ class MainWindow(QMainWindow):
 
     def update_stats(self, stats: GpuStats) -> None:
         self.dashboard_page.update_stats(stats)
+        self.util_header_value.setText(fmt(stats.util, "{:g}%"))
+        self.temp_header_value.setText(fmt(stats.temp, "{:g} °C"))
+        self.power_header_value.setText(fmt(stats.power, "{:g} W"))
+        self.clock_header_value.setText(fmt(stats.sm_clock, "{:g} MHz"))
+        self.memory_header_value.setText(fmt(stats.mem_clock, "{:g} MHz"))
+        self.temp_header_value.setStyleSheet(f"color: {temp_color(stats.temp)};")
         if self._overlay is not None:
             self._overlay.update_display(stats)
         if self._history is not None:

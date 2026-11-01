@@ -38,6 +38,11 @@ the app shows a warning (idle-floor readings would be invalid for auto-tune).
 - Auto-apply on boot (Task Scheduler)
 - Tray notifications (temp threshold alerts)
 
+## UI credit
+
+The interface takes visual inspiration from [mVolt+ by b00nz](https://github.com/b00nz/mVolt).
+GPUUnlock's pages and GPU control behavior are its own.
+
 ## Build
 ```bash
 python -m PyInstaller gpuui.py --onefile --windowed --name GPUUnlock

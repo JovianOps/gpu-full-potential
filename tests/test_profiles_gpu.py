@@ -114,3 +114,18 @@ def test_temp_lock_guard_below_threshold():
 def test_temp_lock_guard_above_threshold():
     # Lock should be blocked when temp >= TEMP_LOCK_MAX_C
     assert 80 >= gpuui.TEMP_LOCK_MAX_C  # above threshold
+
+
+def test_main_window_uses_mvolt_inspired_shell_and_gpuunlock_pages():
+    from PySide6.QtWidgets import QApplication
+
+    app = QApplication.instance() or QApplication([])
+    window = gpuui.MainWindow()
+
+    assert window.windowTitle() == "GPU Unlock"
+    assert window.stack.count() == 5
+    assert window.util_header_value.text() == gpuui.MISSING
+    assert "b00nz" in window.mvolt_credit.text()
+    window._quitting = True
+    window.close()
+    app.quit()
